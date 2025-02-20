@@ -1,9 +1,8 @@
 import React, { createContext, useContext, useState, useEffect } from "react";
 import { Appearance, StyleSheet, StyleSheetProperties } from "react-native";
-import AsyncStorage from "@react-native-async-storage/async-storage";
 
 
-
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 type ThemeType = {
   background: string;

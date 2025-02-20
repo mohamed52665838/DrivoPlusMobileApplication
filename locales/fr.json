@@ -45,6 +45,13 @@
       "model": "Mode sombre",
       "langaugeLabel": "Langue",
       "rangauge": "Langue actuelle"
-    }
+    },
+    "damage": {
+      "damage": "Dommage",
+      "captureimage": "Capturer l'image"
+    },
+    "drivesafety_": {
+        "ds": "Sécurité au volant"
+      }
   }
 }

@@ -12,30 +12,19 @@ import { sessionCleaner } from "@/utils/secure.session";
 import Entypo from '@expo/vector-icons/Entypo';
 import { useTranslation } from "react-i18next";
 import { AppTextTheme } from "@/components/ui/TextThemed";
+import { AppThemedView } from "@/components/ui/AppThemedView";
 
 
 const SettingsScreen = () => {
-  const { isDarkMode, toggleDarkMode } = useTheme(); // ✅ Correctement placé ici
+  const { isDarkMode, toggleDarkMode } = useTheme();
   const userSignOuter = useCurrentUserState((state) => state.signOut);
   const { t } = useTranslation()
   return (
-    <View
-      style={[
-        styles.container,
-        { backgroundColor: isDarkMode ? "#121212" : "#f3f4f6" },
-      ]}
-    >
-      <AppTextTheme variente="headlineMedium">
+    <AppThemedView style={{flex: 1}}>
+      <AppTextTheme variente="headlineMedium" style={{marginHorizontal: 16, paddingVertical: 12}}>
           {t('dashboard.settings.profile')}
       </AppTextTheme>
 
-      {/* Option Mode Sombre */}
-      <View style={styles.settingRow}>
-        <AppTextTheme>
-          Mode Sombre
-        </AppTextTheme>
-        <Switch value={isDarkMode} onValueChange={toggleDarkMode} />
-      </View>
 
       {/* Menu des paramètres */}
       <SettingsMenuItem
@@ -110,7 +99,7 @@ const SettingsScreen = () => {
         }}
         isDarkMode={isDarkMode}
       />
-    </View>
+    </AppThemedView>
   );
 };
 
@@ -164,7 +153,7 @@ const styles = StyleSheet.create({
     paddingVertical: 12,
   },
   menuItemDark: {
-    backgroundColor: "#1e1e1e",
+    backgroundColor: "black",
   },
   menuText: {
     fontSize: 18,
