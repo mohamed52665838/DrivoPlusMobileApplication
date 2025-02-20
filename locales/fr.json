@@ -38,6 +38,13 @@
       "licence": "Licence",
       "disconnect": "Déconnexion",
       "pap": "Politique de confidentialité"
+    },
+    "prefirences": {
+      "prefirences": "Préférences",
+      "modeLabel": "Mode",
+      "model": "Mode sombre",
+      "langaugeLabel": "Langue",
+      "rangauge": "Langue actuelle"
     }
   }
 }

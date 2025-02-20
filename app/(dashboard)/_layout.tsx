@@ -12,7 +12,6 @@ export default function RootLayout() {
     const {t} = useTranslation()
     return (
         <QueryClientProvider client={queryClient}>
-            <ThemeProvider> {/* ✅ Assure que ThemeProvider entoure tout */}
                 <Tabs 
                     initialRouteName="home"
                     screenOptions={{
@@ -44,7 +43,6 @@ export default function RootLayout() {
                         tabBarIcon: ({ color }) => <FontAwesome size={28} name="opencart" color={color} />
                     }} />
                 </Tabs>
-            </ThemeProvider>
         </QueryClientProvider>
     );
 }

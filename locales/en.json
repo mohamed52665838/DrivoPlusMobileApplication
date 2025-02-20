@@ -43,6 +43,13 @@
         "licence": "Licence",
         "pap": "Privacy and Policy",
         "disconnect": "Disconnect"
+      },
+      "prefirences": {
+        "prefirences": "Prefirences",
+        "modeLabel": "Mode",
+        "model": "Dark Mode",
+        "langaugeLabel": "Langauge",
+        "rangauge": "Current Langauge"
       }
     }
     

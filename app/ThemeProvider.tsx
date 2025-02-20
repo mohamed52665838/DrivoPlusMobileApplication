@@ -1,6 +1,9 @@
 import React, { createContext, useContext, useState, useEffect } from "react";
-import { Appearance } from "react-native";
+import { Appearance, StyleSheet, StyleSheetProperties } from "react-native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
+
+
+
 
 type ThemeType = {
   background: string;
@@ -8,6 +11,9 @@ type ThemeType = {
   card: string;
   button: string;
 };
+
+
+
 
 interface ThemeContextType {
   isDarkMode: boolean;
@@ -60,8 +66,10 @@ export const ThemeProvider = ({ children }: { children: React.ReactNode }) => {
 
   const toggleDarkMode = async () => {
     const newTheme = !isDarkMode;
+    console.log('this function execute with new theme ' + newTheme)
     setIsDarkMode(newTheme);
     setTheme(newTheme ? darkTheme : lightTheme);
+  console.log('current theme'+ JSON.stringify (theme));
     await AsyncStorage.setItem("themePreference", newTheme ? "dark" : "light");
   };
 
