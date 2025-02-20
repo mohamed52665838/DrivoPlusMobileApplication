@@ -15,7 +15,6 @@ export default () => {
                     }
                 }>
                     {t('dashboard.damage.damage')}
-
                 </AppTextTheme>
         </AppThemedView>
     )

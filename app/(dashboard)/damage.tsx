@@ -142,7 +142,7 @@ const toggleCameraFacing = () => {
                     {
                         paddingHorizontal: 12,
                         paddingVertical: 16
-                    
+  
                     }
                 }>
                     {t('dashboard.drivesafety_.ds')}
