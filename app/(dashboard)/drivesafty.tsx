@@ -14,7 +14,8 @@ export default () => {
                     
                     }
                 }>
-                    {t('dashboard.drivesafety_.ds')}
+                    {t('dashboard.damage.damage')}
+
                 </AppTextTheme>
         </AppThemedView>
     )

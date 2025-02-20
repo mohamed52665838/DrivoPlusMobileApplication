@@ -19,6 +19,7 @@ export default () => {
     const {t, i18n} = useTranslation()
     const [langauge, setLaguage] = useState<string>()
     const [isFocused, setIsFocused] = useState(false)
+    
     useEffect(() => {
         ( async () => {
         const currentLang = await AsyncStorage.getItem(LANGUAGE_KEY)

@@ -145,7 +145,7 @@ const toggleCameraFacing = () => {
                     
                     }
                 }>
-                    {t('dashboard.damage.damage')}
+                    {t('dashboard.drivesafety_.ds')}
                 </AppTextTheme>
           <AppThemedView
             style={{ flex: 1, justifyContent: "center", alignItems: "center" }}

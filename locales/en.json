@@ -50,7 +50,15 @@
         "model": "Dark Mode",
         "langaugeLabel": "Langauge",
         "rangauge": "Current Langauge"
-      }
+      },
+
+      "damage": {
+  "damage": "Damage",
+  "captureimage": "Capture Image"
+},
+"drivesafety_": {
+  "ds": "Driving Safety"
+}
     }
     
 }

@@ -1,6 +1,6 @@
 import axios from "axios"
 
-const BASE_URL = 'http://192.168.158.97:5000'
+const BASE_URL = 'http://192.168.16.144:5000'
 const requester = axios.create({baseURL: BASE_URL})
 requester.interceptors.request.use(
   (config) => {

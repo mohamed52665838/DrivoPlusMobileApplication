@@ -27,13 +27,13 @@ export default function RootLayout() {
                     }} />
                     
                     <Tabs.Screen name="damage" options={{
-                        title: t('dashboard.tabbaritems.damage'),
+                        title: t('dashboard.tabbaritems.drivesafety'),
                         headerShown: false,
                         tabBarIcon: ({ color }) => <FontAwesome size={28} name="opencart" color={color} />
                     }} />
 
                     <Tabs.Screen name="drivesafty" options={{
-                        title: t('dashboard.tabbaritems.drivesafety'), 
+                        title: t('dashboard.tabbaritems.damage') , 
                         headerShown: false, 
                         tabBarIcon: ({ color }) => <FontAwesome size={28} name="opencart" color={color} />
                     }} />
