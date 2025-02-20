@@ -36,7 +36,10 @@ const SettingsScreen = () => {
             color={isDarkMode ? "white" : "black"}
           />
         }
-        onPressed={() => router.push("/profile")}
+        onPressed={() =>{ router.push("/profilee")
+
+console.log("clicked here ")
+        }}
         isDarkMode={isDarkMode}
       />
       <SettingsMenuItem

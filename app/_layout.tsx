@@ -20,7 +20,7 @@ function RootLayout() {
             <Stack.Screen name="signupscreen" options={{ headerShown: false }} />
             <Stack.Screen name="confirmotp" options={{ headerShown: false }} />
             <Stack.Screen name="(dashboard)" options={{ headerShown: false }} />
-            <Stack.Screen name="profile" options={{ headerShown: false }} />
+            <Stack.Screen name="profilee" options={{ headerShown: false }} />
             <Stack.Screen name="paymentScreen" options={{ title: "Paiement" }} />
           </Stack>
         </UserProvider>
