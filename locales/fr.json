@@ -1,0 +1,43 @@
+{
+  "signin": {
+    "signin": "Se Connecter",
+    "username": "nom d'utilisateur",
+    "password": "mot de passe",
+    "getstarted": "Commencer",
+    "hncy": "Vous n'avez pas encore de compte",
+    "createa": "Créer un compte"
+  },
+  "signup": {
+    "signup": "Registration",
+    "fullname": "Nom complet",
+    "email": "E-mail",
+    "phonenumber": "Numéro de téléphone",
+    "password": "Mot de passe",
+    "getstarted": "Commencer",
+    "yhac": "Vous avez déjà un compte",
+    "backsignin": "Retour à la connexion",
+    "important": "toutes les données que vous soumettez ne feront l'objet d'aucune recherche ou analyse, vos données sont en sécurité dans notre base de données et notre licence les protège, merci"
+  },
+  "otpc": {
+    "head": "Confirmation du code OTP",
+    "resend": "Renvoyer",
+    "verify": "Vérifier"
+  },
+  "dashboard": {
+    "welcome": "Bienvenue {{name}}",
+    "tabbaritems": {
+      "home": "Accueil",
+      "damage": "Dommages",
+      "drivesafety": "Sécurité au volant",
+      "profile": "Profil"
+    },
+    "settings": {
+      "profile": "Profil",
+      "prefirences": "Préférences",
+      "learnmore": "En savoir plus",
+      "licence": "Licence",
+      "disconnect": "Déconnexion",
+      "pap": "Politique de confidentialité"
+    }
+  }
+}

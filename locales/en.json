@@ -1,0 +1,49 @@
+{
+    "signin" : {
+        "signin" : "Sign In",
+        "username": "username",
+        "password": "password",
+        "getstarted": "Get Started",
+        "hncy" : "Have No Account Yet",
+        "createa": "Create Account"
+    },
+    "singup": {
+        "singup": "Signup",
+        "fullname": "full name",
+        "email": "email",
+        "phone number": "phone number", 
+        "password": "password",
+        "getstarted": "Get Started",
+        "yhac": "You Have Aleady Account",
+        "backsignin": "Back Sign In",
+        "important": "all data you will submit is not going to any kind of reseach of analyse your data is save in our database and our licence save it thanks"
+    },
+    "otpc": {
+        "head": "OTP code confirmation",
+        "resend": "Resend",
+        "verify": "Verify"
+    },
+    "dashboard": {
+      "welcome": "welcome {{name}}",
+      "tabbaritems": {
+        "home": "Home",
+        "damage": "Damage",
+        "drivesafety": "Drive Safety",
+        "profile": "Profile"
+      },
+      "navbaritems": {
+        "damage": "Damage",
+        "drivesafety": "Drive Safety",
+        "profile": "Profile"
+      },
+      "settings": {
+        "profile": "Profile",
+        "prefirences": "Prefirences",
+        "learnmore": "Learn More",
+        "licence": "Licence",
+        "pap": "Privacy and Policy",
+        "disconnect": "Disconnect"
+      }
+    }
+    
+}
