@@ -8,6 +8,8 @@ import { useTheme } from "@/app/ThemeProvider";
 import { useTranslation } from "react-i18next";
 import { AppThemedView } from "@/components/ui/AppThemedView";
 import Ionicons from '@expo/vector-icons/Ionicons';
+import * as Notifications from 'expo-notifications';
+import { useEffect, useState } from "react";
 
 
 
@@ -17,28 +19,67 @@ export default function HomeScreen() {
     console.log("Thème appliqué dans HomeScreen :", theme);
     const {t} = useTranslation()
 
-// const requestAndroidPermission = async () => {
-//     const permissionStatus = await messaging().hasPermission();
-//     console.log(permissionStatus)
 
-//   if (Platform.OS === 'android' && Platform.Version >= 33) {
-//        console.log('here') 
-//       const granted = await PermissionsAndroid.request(
-//         PermissionsAndroid.PERMISSIONS.POST_NOTIFICATIONS
-//       );
-//        console.log('there') 
-//       console.log(granted)
-//       if (granted === PermissionsAndroid.RESULTS.GRANTED) {
-//         console.log('Notification permission granted');
-//       } else {
-//         console.log('Notification permission denied');
-//       }
-//   }
-// };
+const [hasPermission, setHasPermission] = useState(false);
 
+useEffect(() => {
+  checkNotificationPermission();
+}, []);
 
+const checkNotificationPermission = async () => {
+  const { status } = await Notifications.getPermissionsAsync();
+  setHasPermission(status === 'granted');
+};
 
-
+// Fonction appelée lorsqu'on clique sur l'icône de notification
+const handleNotificationPress = async () => {
+    const { status } = await Notifications.getPermissionsAsync();
+  
+    if (status !== 'granted') {
+      // Affichage de l'alerte pour demander la permission
+      Alert.alert(
+        "Autoriser les notifications",
+        "Vous devez activer les notifications pour recevoir des alertes.",
+        [
+          {
+            text: "Annuler",
+            style: "cancel"
+          },
+          {
+            text: "Autoriser",
+            onPress: async () => {
+              const { status: newStatus } = await Notifications.requestPermissionsAsync();
+              setHasPermission(newStatus === 'granted');
+  
+              if (newStatus === 'granted') {
+                Alert.alert("Notifications activées", "Vous recevrez des notifications.");
+              } else {
+                // Si l'utilisateur refuse à nouveau, on lui propose d'aller dans les paramètres
+                Alert.alert(
+                  "Notifications non activées",
+                  "Vous devez activer les notifications depuis les paramètres de l'application.",
+                  [
+                    {
+                      text: "Ouvrir les paramètres",
+                      onPress: () => {
+                        Linking.openSettings(); // Ouvre les paramètres de l'app
+                      }
+                    },
+                    { text: "Annuler", style: "cancel" }
+                  ]
+                );
+              }
+            }
+          }
+        ]
+      );
+    } else {
+      Alert.alert("Notifications activées", "Vous recevrez des notifications.");
+    }
+  };
+  
+  
+    
     return (
         <View style={{ 
             flex: 1, 
@@ -59,11 +100,7 @@ export default function HomeScreen() {
                     {t('dashboard.welcome', {name: user.userModel.full_name.split(' ').at(0)})} 
                 </Text>
             )}
-            <TouchableOpacity onPress={
-                async () => {
-                }
-            }
-            >
+            <TouchableOpacity onPress={handleNotificationPress}>
             <Ionicons name="notifications-outline" size={24} color="black" />
             </TouchableOpacity>
             </AppThemedView>
