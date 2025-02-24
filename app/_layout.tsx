@@ -22,6 +22,14 @@ function RootLayout() {
             <Stack.Screen name="(dashboard)" options={{ headerShown: false }} />
             <Stack.Screen name="profilee" options={{ headerShown: false }} />
             <Stack.Screen name="paymentScreen" options={{ title: "Paiement" }} />
+            <Stack.Screen
+    name="CarScannerScreen"
+    options={{
+      headerTitle: "Drivo Plus",
+      headerStyle: { backgroundColor: "#1586AC" },
+      headerTintColor: "#fff",
+    }}
+  />
           </Stack>
         </UserProvider>
       </ThemeProvider>
