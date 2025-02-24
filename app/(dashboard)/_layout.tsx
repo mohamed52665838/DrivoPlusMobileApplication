@@ -20,7 +20,7 @@ export default function RootLayout() {
                         tabBarInactiveTintColor: theme.text, 
                     }}
                 >
-                    <Tabs.Screen name="home" options={{
+                    <Tabs.Screen name="CarScannerScreen" options={{
                         title: t('dashboard.tabbaritems.home'),
                         headerShown: false, 
                         tabBarIcon: ({ color }) => <FontAwesome size={28} name="home" color={color} />
