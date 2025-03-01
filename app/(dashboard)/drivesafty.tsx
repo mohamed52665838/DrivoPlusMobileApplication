@@ -70,7 +70,6 @@ export default function DetectionScreen() {
         <Text style={styles.buttonText}>CHOISIR UNE IMAGE</Text>
       </TouchableOpacity>
 
-      {/* 📌 Affichage de l'image avec les boîtes de détection */}
       {image && (
         <View
           style={styles.imageContainer}
@@ -107,7 +106,7 @@ export default function DetectionScreen() {
                   {/* 🏷 Ajout du texte avec le label */}
                   <SvgText
   x={x + 5}
-  y={y > 20 ? y - 10 : y + 20} // ✅ Évite que le texte soit hors écran
+  y={y > 20 ? y - 10 : y + 20} 
   fill="red"
   fontSize="16"
   fontWeight="bold"

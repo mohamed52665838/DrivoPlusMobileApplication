@@ -86,7 +86,6 @@ const MyCarsScreen = () => {
           console.log(detailsData.vehicle_info)
           const updatedCar ={
             ...newCar,
-
             vin: detailsData.vin,
             name:detailsData.vehicle_info.make,
             make: detailsData.vehicle_info.make,
