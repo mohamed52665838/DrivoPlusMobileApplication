@@ -84,7 +84,8 @@ android {
     ndkVersion rootProject.ext.ndkVersion
 
     buildToolsVersion rootProject.ext.buildToolsVersion
-    compileSdk rootProject.ext.compileSdkVersion
+    // compileSdk rootProject.ext.compileSdkVersion
+    compileSdkVersion 21
 
     namespace "com.applicationcarcare"
     defaultConfig {
