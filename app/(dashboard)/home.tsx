@@ -23,6 +23,7 @@ export default function HomeScreen() {
   const [permissionGranted, setPermissionGranted] = useState(false);
   const [pushToken, setPushToken] = useState<string | null>(null);
   const [notifications, setNotifications] = useState<any[]>([]);
+
   const [categoryData, setCategoryData] = useState<{ 
     name: string; 
     count: number; 
@@ -30,6 +31,7 @@ export default function HomeScreen() {
     legendFontColor: string; 
     legendFontSize: number; 
   }[]>([]);
+
   const askNotificationPermission = async () => {
     const { status } = await Notifications.requestPermissionsAsync();
     if (status === "granted") {
@@ -68,6 +70,7 @@ export default function HomeScreen() {
   }, [permissionGranted]);
 
   useEffect(() => {
+
     const subscription = Notifications.addNotificationReceivedListener(notification => {
       console.log("Notification reçue :", notification);
       Alert.alert("🚗 Nouvelle alerte", notification.request.content.body || "Vous avez une nouvelle notification !");

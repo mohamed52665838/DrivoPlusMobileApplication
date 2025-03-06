@@ -15,6 +15,7 @@ import AntDesign from '@expo/vector-icons/AntDesign';
 import * as ImageManipulator from "expo-image-manipulator";
 import { sortRoutes } from "expo-router/build/sortRoutes";
 import {Audio} from 'expo-av'
+import { IP_ADRESS, WS_PORT } from "@/constants/Network.config";
 
 
 const soundMp =  require('@/assets/sound/metal-pipe-230698.mp3')
@@ -69,7 +70,7 @@ export default function Damage() {
     (() => {
 
       if (isRecording) {
-        ws.current = new WebSocket("ws://192.168.245.97:8083");
+        ws.current = new WebSocket(`ws://${IP_ADRESS}:${WS_PORT}`);
         ws.current.onopen = (event) => {
           console.log(`websocket opend ${event}`);
         };
