@@ -1,13 +1,14 @@
 import axios from "axios"
 
-const IP_ADRESS = "192.168.245.97";
-const PORT = 5000;
-const WS_PORT = 4040;
+const IP_ADRESS = "192.168.1.16";
+const PORT = 5050;
+const WS_PORT = 5643;
 
 const BASE_URL = `http://${IP_ADRESS}:${PORT}`
 const requester = axios.create({baseURL: BASE_URL})
 
 requester.interceptors.request.use(
+
   (config) => {
     console.log("Sending Request:", config.method?.toUpperCase(), config.url);
     console.log("Headers:", config.headers);
@@ -21,5 +22,5 @@ requester.interceptors.request.use(
   }
 );
 
-export {IP_ADRESS, WS_PORT}
+export {IP_ADRESS, WS_PORT, PORT}
 export default requester

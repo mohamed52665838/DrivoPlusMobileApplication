@@ -1,6 +1,6 @@
 import { buttonStyle } from "@/components/ui/ButtonEditStyle";
 import { useUser } from "@/components/ui/UserProvider.provider";
-import useCurrentUserState from "@/zustands.stores/userStore";
+import useCurrentUserState, { useExpoToken } from "@/zustands.stores/userStore";
 import { router } from "expo-router";
 import { Alert, FlatList, TouchableOpacity, View, Dimensions } from "react-native";
 import { Button, Text } from "react-native-paper";
@@ -12,8 +12,13 @@ import * as Notifications from 'expo-notifications';
 import { useEffect, useState } from "react";
 import axios from 'axios';
 import { PieChart } from "react-native-chart-kit";
+import { IP_ADRESS, PORT } from "@/constants/Network.config";
+import log from "@/serviers/Logger.service.rn";
+import { lightGreen100 } from "react-native-paper/lib/typescript/styles/themes/v2/colors";
 
 const screenWidth = Dimensions.get("window").width;
+
+
 
 export default function HomeScreen() {
   const { theme } = useTheme();
@@ -23,6 +28,7 @@ export default function HomeScreen() {
   const [permissionGranted, setPermissionGranted] = useState(false);
   const [pushToken, setPushToken] = useState<string | null>(null);
   const [notifications, setNotifications] = useState<any[]>([]);
+  const updateToken = useExpoToken((state) => state.updateToken)
 
   const [categoryData, setCategoryData] = useState<{ 
     name: string; 
@@ -46,6 +52,8 @@ export default function HomeScreen() {
     try {
       const { data } = await Notifications.getExpoPushTokenAsync();
       console.log("Push token:", data);
+      // update token
+      updateToken(data)
       setPushToken(data);
     } catch (error) {
       console.error("Erreur lors de la récupération du push token:", error);
@@ -55,13 +63,14 @@ export default function HomeScreen() {
   const fetchNotifications = async () => {
     try {
       if (user.userModel?._id) {
-        const response = await axios.get(`http://192.168.1.4:5050/notifications/user_notifications?user_id=${user.userModel._id}`);
+        const response = await axios.get(`http://${IP_ADRESS}:${PORT}/notifications/user_notifications?user_id=${user.userModel._id}`);
         setNotifications(response.data);
       }
     } catch (error) {
       console.error("Erreur lors de la récupération des notifications:", error);
     }
   };
+
 
   useEffect(() => {
     if (permissionGranted) {
@@ -70,25 +79,27 @@ export default function HomeScreen() {
   }, [permissionGranted]);
 
   useEffect(() => {
-
     const subscription = Notifications.addNotificationReceivedListener(notification => {
       console.log("Notification reçue :", notification);
       Alert.alert("🚗 Nouvelle alerte", notification.request.content.body || "Vous avez une nouvelle notification !");
       fetchNotifications();
     });
-
-    return () => subscription.remove();
+    log.debug("push token updated");
+    return () => {
+      log.debug("Cleaner Function Executed") 
+      subscription.remove()
+    };
   }, []);
 
-  useEffect(() => {
-    fetchNotifications();
-  }, [user.userModel?._id]);
+  // useEffect(() => {
+  //   fetchNotifications();
+  // }, [user.userModel?._id]);
 
   const fetchNotificationsByCategory = async () => {
     try {
       if (!user.userModel?._id) return;
 
-      const response = await axios.get(`http://192.168.1.4:5050/notifications/user_notifications?user_id=${user.userModel._id}`);
+      const response = await axios.get(`http://${IP_ADRESS}:${PORT}/notifications/user_notifications?user_id=${user.userModel._id}`);
       const notifications = response.data;
 
       const categoryCount = notifications.reduce((acc: Record<string, number>, notification: any) => {
@@ -105,25 +116,26 @@ export default function HomeScreen() {
         legendFontSize: 15,
       }));
       
-
       setCategoryData(formattedData);
     } catch (error) {
       console.error("Erreur lors de la récupération des notifications par catégorie:", error);
     }
   };
+
   useEffect(() => {
-    fetchNotificationsByCategory(); // Charger les données au démarrage
+    if (user.userModel != null) {
+      const interval = setInterval(() => {
+        fetchNotifications();
+        fetchNotificationsByCategory(); // Mise à jour automatique
+      }, 5000); // Rafraîchir toutes les 5 secondes
 
-    const interval = setInterval(() => {
-      fetchNotificationsByCategory(); // Mise à jour automatique
-    }, 5000); // Rafraîchir toutes les 5 secondes
-
-    return () => clearInterval(interval); // Nettoyer l'intervalle quand le composant est démonté
-  }, []);
+      return () => clearInterval(interval); // Nettoyer l'intervalle quand le composant est démonté
+    }
+  }, [user.userModel]);
   
-  useEffect(() => {
-    fetchNotificationsByCategory();
-  }, [user.userModel?._id]);
+  // useEffect(() => {
+  //   fetchNotificationsByCategory();
+  // }, [user.userModel?._id]);
 
   const getRandomColor = () => {
     const letters = "0123456789ABCDEF";

@@ -8,6 +8,18 @@ interface UserStatus {
     updateUser: (updates: Partial<UserModel>) => void;  // 🔥 Permet de mettre à jour seulement certains champs
 }
 
+interface ExpoToken {
+    expToken: string | null
+    updateToken: (string: string) => void
+}
+
+const useExpoToken = create<ExpoToken>((set) => ({
+    expToken: null,
+    updateToken: (expToken) => set(() => ({expToken: expToken}))
+}))
+
+
+
 const useCurrentUserState = create<UserStatus>((set) => ({
     userModel: null,
     signIn: (user: UserModel) => set(() => ({ userModel: user })),
@@ -18,4 +30,5 @@ const useCurrentUserState = create<UserStatus>((set) => ({
         })),
 }));
 
+export {useExpoToken}
 export default useCurrentUserState;
