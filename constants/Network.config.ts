@@ -1,6 +1,11 @@
 import axios from "axios"
 
-const BASE_URL = 'http://192.168.245.97:5000'
+const ipAdress = "192.168.179.144"
+const webPort = 5000
+const webSocketPort = 8085
+
+
+const BASE_URL = `http://${ipAdress}:${webPort}`
 const requester = axios.create({baseURL: BASE_URL})
 requester.interceptors.request.use(
   (config) => {
@@ -14,4 +19,6 @@ requester.interceptors.request.use(
     return Promise.reject(error);
   }
 );
+
+export {ipAdress, webPort, webSocketPort}
 export default requester

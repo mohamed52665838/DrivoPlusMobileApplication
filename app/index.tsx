@@ -30,7 +30,10 @@ const IndexRoot = () => {
   const { userModel, signIn, signOut } = useCurrentUserState()
   const onLogin = async (data: LoginFormField)  => {
     const respones = await signin(data).catch((e : AxiosError) => {
-      const [title, message] = (e.response?.status === 400) ? networkErrorTranslation(e) : ['Wrong cridentials', 'Username or passwod uncorrect']
+      console.log(`this is runing ${e.cause}`)
+      console.log(`this is runing ${e.message}`)
+      console.log(`this is runing ${e.stack}`)
+const [title, message] = (e.response?.status === 400) ?  ['Wrong cridentials', 'Username or passwod uncorrect'] : networkErrorTranslation(e)
       Alert.alert(title, message)
     }).catch((e) => {
       Alert.alert('Sorry error has occure', 'unexpected error just happned.')

@@ -15,6 +15,7 @@ import AntDesign from '@expo/vector-icons/AntDesign';
 import * as ImageManipulator from "expo-image-manipulator";
 import { sortRoutes } from "expo-router/build/sortRoutes";
 import {Audio} from 'expo-av'
+import {ipAdress, webSocketPort} from '@/constants/Network.config'
 
 
 const soundMp =  require('@/assets/sound/metal-pipe-230698.mp3')
@@ -67,25 +68,25 @@ export default function Damage() {
 
   useEffect(() => {
     (() => {
-
       if (isRecording) {
-        ws.current = new WebSocket("ws://192.168.245.97:8083");
+        ws.current = new WebSocket(`ws://${ipAdress}:${webSocketPort}`);
         ws.current.onopen = (event) => {
           console.log(`websocket opend ${event}`);
         };
         ws.current.onmessage = async (eventMessage) => {
           console.log(`websocket message ${eventMessage.data}`);
+          if(!isDriverATS)
             setIsDriverATS(true)
             await playSoundF()
         };
 
         ws.current.onerror = (eventError) => {
-          console.log(`websocket error ${eventError.message}`);
+          console.log(`websocket error ${eventError}`);
         };
 
         ws.current.onclose = (closeEvent) => {
           console.log(
-            `websocket closed ${closeEvent.message} code ${closeEvent.code} reason ${closeEvent.reason}`
+            `websocket closed ${closeEvent} code ${closeEvent.code} reason ${closeEvent.reason}`
           );
         };
       } else {
