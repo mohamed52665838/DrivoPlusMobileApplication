@@ -5,6 +5,8 @@ import { Appearance, StyleSheet, StyleSheetProperties } from "react-native";
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
 type ThemeType = {
+  primary: string | OpaqueColorValue | undefined;
+  colors: any;
   background: string;
   text: string;
   card: string;

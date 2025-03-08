@@ -7,9 +7,14 @@
     "icon": "./assets/images/icon.png",
     "scheme": "myapp",
     "userInterfaceStyle": "automatic",
+    "extra": {
+      "eas": {
+        "projectId": "492f4d27-6e5b-4c1c-a941-31624e5f2fbe"
+      }
+    },
     "newArchEnabled": true,
     "ios": {
-      "supportsTablet": true
+      "supportsTablet": true   
     },
     "android": {
       "adaptiveIcon": {
