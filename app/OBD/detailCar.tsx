@@ -7,7 +7,7 @@ interface DataItem {
   unit: string;
 }
 
-const WEBSOCKET_URL = "ws://192.168.252.132:5006";
+const WEBSOCKET_URL = "ws://192.168.203.132:5006";
 
 const DashboardScreen = () => {
   const [data, setData] = useState<DataItem[]>([]);

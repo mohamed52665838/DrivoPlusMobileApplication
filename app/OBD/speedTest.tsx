@@ -3,7 +3,7 @@ import { View, Text, TextInput, TouchableOpacity, StyleSheet } from "react-nativ
 import { Ionicons } from "@expo/vector-icons";
 import { Stack, useRouter } from "expo-router";
 
-const WEBSOCKET_URL = "ws://192.168.252.132:5006"; // WebSocket server
+const WEBSOCKET_URL = "ws://192.168.203.132:5006"; // WebSocket server
 
 const AccelerationScreen = () => {
   const [testStarted, setTestStarted] = useState(false);

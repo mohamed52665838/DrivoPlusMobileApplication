@@ -37,7 +37,7 @@ const DiagnosticInterface: React.FC<DiagnosticInterfaceProps> = ({ onScanComplet
       ])
     ).start();
 
-    const socket = new WebSocket('ws://192.168.252.132:5006');
+    const socket = new WebSocket('ws://192.168.203.132:5006');
     socketRef.current = socket;
 
     socket.onopen = () => {

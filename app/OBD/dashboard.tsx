@@ -14,7 +14,7 @@ const Dashboard: React.FC = () => {
   const router = useRouter(); // Router for navigation
 
   useEffect(() => {
-    const socket = new WebSocket('ws://192.168.252.132:5006');
+    const socket = new WebSocket('ws://192.168.203.132:5006');
 
     socket.onopen = () => {
       console.log('WebSocket connected');

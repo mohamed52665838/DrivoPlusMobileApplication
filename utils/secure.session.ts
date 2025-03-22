@@ -8,7 +8,7 @@ enum TokenStructure {
 
 const TOKEN = 'TOKEN'
 const REFRESH_TOKEN = 'REFRESH_TOKEN'
-
+//chn5abi fiha token
 const storeApiKey = async (token: string, tokenType: TokenStructure): Promise<boolean> => {
   try {
     await SecureStore.setItem((tokenType == TokenStructure.TOKEN) ? TOKEN : REFRESH_TOKEN, token);

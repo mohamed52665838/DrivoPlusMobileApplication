@@ -32,7 +32,6 @@ export default function Damage() {
   const [latestUri, setLatestUri] = useState<string | undefined>();
   const [isRecording, setIsRecording] = useState(false);
   const [isDriverATS, setIsDriverATS] = useState(false)
-  const [playSound, setPlaySound] = useState(false)
   const [isConnected, setIsConneected] = useState(false)
   const [connectionError, setConnnectionError] = useState<string | null>(null)
   const [background, setBackground] = useState('')  
@@ -40,9 +39,11 @@ export default function Damage() {
   const user = useCurrentUserState((state) => state.userModel)
   const [isCameraPermitted, setIsCameraPermitted] = useState(false)
   const soundRef = useRef<Audio.Sound | null>()
-
+  
+ 
   const { t } = useTranslation();
   const ws = useRef<WebSocket>();
+
 
   // Functions Start
 
@@ -73,48 +74,7 @@ export default function Damage() {
     setFacing((current) => (current === "back" ? "front" : "back"));
   };
 
-  const onPictureTaken = () => {
-    cameraRef
-      ?.takePictureAsync({ scale: 0.1 })
-      .then(async (imageCapturedUri) => {
-        if (imageCapturedUri === undefined)
-          throw Error("Caputre Image: Image Undefined");
-        console.log(imageCapturedUri.width);
-        console.log(imageCapturedUri.height);
-        setLatestUri(imageCapturedUri.uri);
-        return imageCapturedUri;
-      })
-      .then(async (data) => {
-        // scale the size of image
-        const scaledPhoto = await ImageManipulator.manipulateAsync(
-          data.uri,
-          [
-            {
-              resize: {
-                width: 128,
-                height: 128,
-              },
-            },
-          ],
-          { compress: 1, format: ImageManipulator.SaveFormat.PNG }
-        );
-        if (scaledPhoto === undefined)
-          throw Error("Scaling Image: Error Occure While Scaling The Image");
-        return scaledPhoto;
-      })
-      .then(async (imageAfterScaled) => {
-        console.log(imageAfterScaled.width);
-        console.log(imageAfterScaled.height);
-        console.log(imageAfterScaled.uri);
-        setTimeout(() => {
-          setLatestUri(imageAfterScaled.uri);
-        }, 1000);
-      })
-      .catch((error) => {
-        console.log(`we've problem in capturing image ${error}`);
-      });
-  };
-
+ 
   // Sound Effects
   const playSoundF = async () => {
     if (!soundRef.current) return;
@@ -131,8 +91,8 @@ export default function Damage() {
 
  /**
   * websocket callbacks
-  * onopen
-  *     readonly readyState: number;
+  * 
+  *   readonly readyState: number;
       send(data: string | ArrayBuffer | ArrayBufferView | Blob): void;
       close(code?: number, reason?: string): void;
       onopen: (() => void) | null;
@@ -196,6 +156,7 @@ const onDataReceived = async (eventMessage: WebSocketMessageEvent) => {
    * Dep: No
    * Cleanup: Clear sound object 
    */
+
   useEffect(() => {
     (async () => {
       try {
@@ -218,7 +179,9 @@ const onDataReceived = async (eventMessage: WebSocketMessageEvent) => {
 
 
   /**
-   * Record Begin => Connection Begin
+   * Idea: Record Begin => Connection Begin
+   * Dep: [isRecording]
+   * clean: close connection
    */
   useEffect(() => {
     (() => {
@@ -263,7 +226,7 @@ const onDataReceived = async (eventMessage: WebSocketMessageEvent) => {
 
 
   /**
-   * Feature: Camera permission
+   * Idea: Camera permission
    * Dep: NO (Execute once)
    *   
    */
@@ -277,7 +240,7 @@ const onDataReceived = async (eventMessage: WebSocketMessageEvent) => {
             log.error("Permission: Permission Exipred")            
             throw new Error("Effect: Camera Permission Can't Ask Any More")
           } else if (value.canAskAgain) {
-            log.info("Perission: Permission Not Permitted but we Can Ask For It")            
+            log.info("Permission: Permission Not Permitted but we Can Ask For It")            
           }
         },
         (error) => {
@@ -291,23 +254,24 @@ const onDataReceived = async (eventMessage: WebSocketMessageEvent) => {
 
 
   /**
-   * Dep: isConnected
-   * => if we're connected send frames to server else no
-   * Feature: send frames if we're connected to server
+   * Idea: send frames if we're connected to server
+   * Dep: [isConnected]
    */
 
   useEffect(() => {
-    const cleaner = setInterval(() => {
-        if(isConnected)
-          pictureTaker().then( async (normalizedImage) => {
-            if(ws.current) {
-              ws.current.send(normalizedImage.base64 ?? '')
+    if(isConnected) {
+        const cleaner = setInterval(() => {
+            pictureTaker().then( async (normalizedImage) => {
+              if(ws.current) {
+                ws.current.send(normalizedImage.base64 ?? '')
+              }
             }
-          }
-          ).catch(console.warn)
-    }, 200);
+            ).catch(console.warn)
+      }, 200);
 
-    return () => clearInterval(cleaner)
+      return () => clearInterval(cleaner)
+    }
+    
   }, [isConnected]); // change from isRecording to isConnected to begin transmite data
 
 
@@ -357,16 +321,6 @@ const onDataReceived = async (eventMessage: WebSocketMessageEvent) => {
               <TouchableOpacity onPress={() => setIsRecording(false)}>
                 <MaterialIcons name="arrow-back" size={24} color="white" />
               </TouchableOpacity>
-
-              {/* {isDriverATS && (
-                <TouchableOpacity onPress={async () => {
-                  setIsDriverATS(false)
-                  await pauseSound() 
-                }
-              }>
-                  <Text style={{ color: "red" }}>Your're About To Sleep</Text>
-                </TouchableOpacity>
-              )} */}
 
               <View
                 style={{
