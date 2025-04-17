@@ -1,4 +1,4 @@
-import { Alert, Image, StyleSheet, TouchableOpacity, View } from "react-native";
+import { Alert, Image, PermissionsAndroid, StyleSheet, TouchableOpacity, View } from "react-native";
 import { Button, Dialog, Portal, Provider, Text } from "react-native-paper";
 import { useTheme } from "@/app/ThemeProvider";
 import { CameraView, CameraType, useCameraPermissions, Camera } from 'expo-camera';
@@ -38,6 +38,7 @@ export default function Damage() {
   const expoToken = useExpoToken((state) => state.expToken)
   const user = useCurrentUserState((state) => state.userModel)
   const [isCameraPermitted, setIsCameraPermitted] = useState(false)
+  const [isNeverAskAgain, setIsNererAskAgian] = useState(false)
   const soundRef = useRef<Audio.Sound | null>()
   
  
@@ -105,8 +106,8 @@ export default function Damage() {
  const onOpen = () => {
    ws.current?.send(
      JSON.stringify({
-       user_id: user?._id,
-       token: expoToken,
+       user_id: user!._id,
+       token: expoToken ?? 'No Token For Now!',
      })
    );
  };
@@ -178,6 +179,21 @@ const onDataReceived = async (eventMessage: WebSocketMessageEvent) => {
   }, []);
 
 
+  // useEffect(() => {
+  //  const permissionPlease = async () => {
+  //     const cameraPermission = await PermissionsAndroid.check(PermissionsAndroid.PERMISSIONS.CAMERA)
+  //     if(!cameraPermission) {
+  //       const cameraPermissionRequestResult = await PermissionsAndroid.request(PermissionsAndroid.PERMISSIONS.CAMERA)
+  //       if(cameraPermissionRequestResult == PermissionsAndroid.RESULTS.DENIED) {
+  //           await permissionPlease()
+  //       }else if(cameraPermissionRequestResult == PermissionsAndroid.RESULTS.NEVER_ASK_AGAIN) {
+  //         setIsNererAskAgian(true)
+  //       }
+  //     }
+  //   }
+  // }, [])
+
+
   /**
    * Idea: Record Begin => Connection Begin
    * Dep: [isRecording]
@@ -186,21 +202,21 @@ const onDataReceived = async (eventMessage: WebSocketMessageEvent) => {
   useEffect(() => {
     (() => {
       if (isRecording) {
-        if (expoToken == null) {
-          Alert.alert(
-            "Allow Notification",
-            "Please back to home and click on the notification icon to begin recording",
-            [
-              {
-                text: "OK",
-                onPress: () => {
-                  setIsRecording(false);
-                },
-              },
-            ]
-          );
-          return;
-        }
+        // if (expoToken == null) {
+        //   Alert.alert(
+        //     "Allow Notification",
+        //     "Please back to home and click on the notification icon to begin recording",
+        //     [
+        //       {
+        //         text: "OK",
+        //         onPress: () => {
+        //           setIsRecording(false);
+        //         },
+        //       },
+        //     ]
+        //   );
+        //   return;
+        // }
 
         ws.current = new WebSocket(`ws://${IP_ADRESS}:${WS_PORT}`);
         ws.current.onopen = onOpen;
