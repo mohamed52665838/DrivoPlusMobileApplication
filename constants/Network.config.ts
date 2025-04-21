@@ -1,6 +1,6 @@
 import axios from "axios"
 
-const IP_ADRESS = "192.168.1.12";
+const IP_ADRESS = "192.168.214.132";
 const PORT = 5050;
 const WS_PORT = 5643;
 

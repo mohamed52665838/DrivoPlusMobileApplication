@@ -7,6 +7,10 @@ import {
   StyleSheet,
   Alert,
   Animated,
+<<<<<<< HEAD
+=======
+  NativeModules,
+>>>>>>> a7756f9 (Initial commit on abderrahmen-2)
 } from "react-native";
 import { Ionicons, MaterialCommunityIcons, FontAwesome5 } from "@expo/vector-icons";
 import { useRouter } from "expo-router";
@@ -38,13 +42,24 @@ const HomeScreen: React.FC = () => {
   const router = useRouter();
   const [isConnected, setIsConnected] = useState(false);
   const { isDarkMode } = useTheme();
+<<<<<<< HEAD
+=======
+  const { AppMonitor } = NativeModules;
+>>>>>>> a7756f9 (Initial commit on abderrahmen-2)
 
 
   const handleDemoClick = () => {
     if (!isConnected) {
       Alert.alert("Select Demo Mode", "View sensors in demo mode.", [
         { text: "Cancel", style: "cancel" },
+<<<<<<< HEAD
         { text: "Agree", onPress: () => setIsConnected(true) },
+=======
+        { text: "Agree",onPress: () => {
+          setIsConnected(true);
+          AppMonitor.startService(); // ✅ Start your background service here
+        } },
+>>>>>>> a7756f9 (Initial commit on abderrahmen-2)
       ]);
     } else {
       setIsConnected(false);

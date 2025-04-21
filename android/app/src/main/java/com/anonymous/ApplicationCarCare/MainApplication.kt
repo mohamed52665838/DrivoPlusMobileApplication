@@ -15,6 +15,10 @@ import com.facebook.soloader.SoLoader
 
 import expo.modules.ApplicationLifecycleDispatcher
 import expo.modules.ReactNativeHostWrapper
+<<<<<<< HEAD
+=======
+import com.anonymous.ApplicationCarCare.AppMonitorPackage; // ← import this
+>>>>>>> a7756f9 (Initial commit on abderrahmen-2)
 
 class MainApplication : Application(), ReactApplication {
 
@@ -22,11 +26,19 @@ class MainApplication : Application(), ReactApplication {
         this,
         object : DefaultReactNativeHost(this) {
           override fun getPackages(): List<ReactPackage> {
+<<<<<<< HEAD
             val packages = PackageList(this).packages
             // Packages that cannot be autolinked yet can be added manually here, for example:
             // packages.add(new MyReactNativePackage());
             return packages
           }
+=======
+            val packages = PackageList(this).packages.toMutableList()
+            packages.add(AppMonitorPackage()) // ✅ Make sure this is added
+            return packages
+          }
+          
+>>>>>>> a7756f9 (Initial commit on abderrahmen-2)
 
           override fun getJSMainModuleName(): String = ".expo/.virtual-metro-entry"
 

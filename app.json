@@ -14,7 +14,12 @@
     },
     "newArchEnabled": true,
     "ios": {
+<<<<<<< HEAD
       "supportsTablet": true   
+=======
+      "supportsTablet": true,
+      "bundleIdentifier": "com.anonymous.ApplicationCarCare"
+>>>>>>> a7756f9 (Initial commit on abderrahmen-2)
     },
     "android": {
       "adaptiveIcon": {
@@ -22,7 +27,11 @@
         "backgroundColor": "#ffffff"
       },
       "permissions": [
+<<<<<<< HEAD
        "android.permission.POST_NOTIFICATIONS",
+=======
+        "android.permission.POST_NOTIFICATIONS",
+>>>>>>> a7756f9 (Initial commit on abderrahmen-2)
         "android.permission.CAMERA",
         "android.permission.RECORD_AUDIO"
       ],
