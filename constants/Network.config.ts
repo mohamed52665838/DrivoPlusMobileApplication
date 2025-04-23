@@ -1,11 +1,10 @@
-import axios from "axios"
-
-const IP_ADRESS = "192.168.1.12";
+import axios from "axios";
+const IP_ADRESS = "192.168.213.97";
 const PORT = 5050;
 const WS_PORT = 5643;
 
-const BASE_URL = `http://${IP_ADRESS}:${PORT}`
-const requester = axios.create({baseURL: BASE_URL})
+const BASE_URL = `http://${IP_ADRESS}:${PORT}`;
+const requester = axios.create({ baseURL: BASE_URL });
 
 requester.interceptors.request.use(
   (config) => {
@@ -18,8 +17,8 @@ requester.interceptors.request.use(
   (error) => {
     console.error("Request Error:", error);
     return Promise.reject(error);
-  }
+  },
 );
 
-export {IP_ADRESS, WS_PORT, PORT}
-export default requester
+export { IP_ADRESS, WS_PORT, PORT };
+export default requester;
