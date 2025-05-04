@@ -2,6 +2,59 @@
 
 This is an [Expo](https://expo.dev) project created with [`create-expo-app`](https://www.npmjs.com/package/create-expo-app).
 
+
+
+## Get started
+
+#### 1. Clone the Repository
+```bash
+git clone -b mohamed-branch https://github.com/mohamed52665838/DrivoPlusMobileApplication.git
+```
+
+
+#### 3. Clone local dependency [(Drivo Plus Accessibility Service)](https://github.com.mohamed52665838/react-native-accessibility-service)
+```bash
+git clone  https://github.com/mohamed52665838/react-native-accessibility-service.git
+```
+* Accessibility Service is a dependency which helps us keep track of user actions (e.g, switch app, typing, scrolling).
+
+#### 2. Install dependencies
+<b>Note:</b> at this point we have two projects in the same directory
+* react-native-accessibility-service
+* DrivoPlusMobileApplication
+
+    ##### 2.1 Intall remote dependencies
+   ```bash
+   cd DrivoPlusMobileApplication
+   npm install
+   ```
+
+    ##### 2.2 Install local dependency
+   * Windows
+   ```bash
+    yarn remove react-native-background-service-tracking
+    yarn add file:../react-native-accessibility-service
+   ```
+   * Linux / MacOS
+   ```bash
+    yarn remove react-native-background-service-tracking
+    yarn add ../react-native-accessibility-service
+    ```
+#### 3. Start the Application (Android)
+    npx expo run:android
+
+#### 4. That's it & More expo actions
+Everything is now up and running.
+
+
+- [development build](https://docs.expo.dev/develop/development-builds/introduction/)
+- [Android emulator](https://docs.expo.dev/workflow/android-studio-emulator/)
+- [iOS simulator](https://docs.expo.dev/workflow/ios-simulator/)
+- [Expo Go](https://expo.dev/go), a limited sandbox for trying out app development with Expo
+
+<b>Note:</b> Don’t forget to configure the correct IP and port to ensure proper communication between the application and the system.
+
+
 ## 📦 Project Dependencies
 ##### 🔧 Core React & React Native
 * react: 18.3.1
@@ -83,58 +136,6 @@ react-native-background-service-tracking: ../background-service-tracking (local 
 
 
 
-
-
-
-## Get started
-
-#### 1. Clone the Repository
-```bash
-git clone -b mohamed-branch https://github.com/mohamed52665838/DrivoPlusMobileApplication.git
-```
-
-
-#### 3. Clone local dependency [(Drivo Plus Accessibility Service)](https://github.com.mohamed52665838/react-native-accessibility-service)
-```bash
-git clone  https://github.com/mohamed52665838/react-native-accessibility-service.git
-```
-* Accessibility Service is a dependency which helps us keep track of user actions (e.g, switch app, typing, scrolling).
-
-#### 2. Install dependencies
-<b>Note:</b> at this point we have two projects in the same directory
-* react-native-accessibility-service
-* DrivoPlusMobileApplication
-
-    ##### 2.1 Intall remote dependencies
-   ```bash
-   cd DrivoPlusMobileApplication
-   npm install
-   ```
-
-    ##### 2.2 Install local dependency
-   * Windows
-   ```bash
-    yarn remove react-native-background-service-tracking
-    yarn add file:../react-native-accessibility-service
-   ```
-   * Linux / MacOS
-   ```bash
-    yarn remove react-native-background-service-tracking
-    yarn add ../react-native-accessibility-service
-    ```
-#### 3. Start the Application (Android)
-    npx expo run:android
-
-#### 4. That's it & More expo actions
-Everything is now up and running.
-
-
-- [development build](https://docs.expo.dev/develop/development-builds/introduction/)
-- [Android emulator](https://docs.expo.dev/workflow/android-studio-emulator/)
-- [iOS simulator](https://docs.expo.dev/workflow/ios-simulator/)
-- [Expo Go](https://expo.dev/go), a limited sandbox for trying out app development with Expo
-
-<b>Note:</b> Don’t forget to configure the correct IP and port to ensure proper communication between the application and the system.
 
 
 ## Get a fresh project
