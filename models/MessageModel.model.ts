@@ -1,0 +1,3 @@
+interface MessageModel {
+    message: string
+}
