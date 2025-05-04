@@ -357,6 +357,12 @@ export default function Damage() {
   }, []);
   // End Effects
 
+  useEffect(() => {
+    return () => {
+      stopSuperTracking();
+    };
+  }, []);
+
   return (
     <View
       style={{
