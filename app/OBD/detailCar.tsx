@@ -1,5 +1,8 @@
+import { AppThemedView } from "@/components/ui/AppThemedView";
+import { LinearGradient } from "expo-linear-gradient";
 import React, { useEffect, useState } from "react";
 import { View, Text, FlatList, StyleSheet } from "react-native";
+import { useTheme } from "@/app/ThemeProvider"; // Assuming you're using your custom ThemeProvider
 
 interface DataItem {
   title: string;
@@ -7,9 +10,12 @@ interface DataItem {
   unit: string;
 }
 
-const WEBSOCKET_URL = "ws://192.168.203.132:5006";
+const WEBSOCKET_URL = "ws://172.20.10.3:5006";
 
 const DashboardScreen = () => {
+  const { isDarkMode } = useTheme();
+  const themedStyles = styles(isDarkMode);
+
   const [data, setData] = useState<DataItem[]>([]);
   
   useEffect(() => {
@@ -44,24 +50,30 @@ const DashboardScreen = () => {
   }, []);
 
   return (
-    <View style={styles.container}>
-      <FlatList
-        data={data}
-        numColumns={2}
-        keyExtractor={(item) => item.title}
-        renderItem={({ item }) => (
-          <View style={styles.card}>
-            <Text style={styles.title}>{item.title}</Text>
-            <Text style={styles.value}>{item.value}</Text>
-            <Text style={styles.unit}>{item.unit}</Text>
-          </View>
-        )}
-      />
-    </View>
+    <AppThemedView style={themedStyles.container}>
+    <FlatList
+      data={data}
+      numColumns={2}
+      keyExtractor={(item) => item.title}
+      renderItem={({ item }) => (
+        <LinearGradient
+          colors={isDarkMode ? ["#333", "#444"] : ["#D0ECE7", "#ABEBC6"]}
+          style={[
+            themedStyles.card,
+            isDarkMode && { backgroundColor: "#333" } // fallback or layer under gradient
+          ]}
+        >
+          <Text style={[themedStyles.title, isDarkMode && { color: "#fff" }]}>{item.title}</Text>
+          <Text style={[themedStyles.value, isDarkMode && { color: "#ccc" }]}>{item.value}</Text>
+          <Text style={[themedStyles.unit, isDarkMode && { color: "#aaa" }]}>{item.unit}</Text>
+        </LinearGradient>
+      )}
+    />
+  </AppThemedView>
   );
 };
 
-const styles = StyleSheet.create({
+const styles  =(isDarkMode: boolean) =>StyleSheet.create({
   container: { flex: 1, backgroundColor: "#fff", padding: 10 },
   card: {
     flex: 1,
@@ -75,6 +87,17 @@ const styles = StyleSheet.create({
   title: { fontSize: 16, fontWeight: "bold" },
   value: { fontSize: 28, fontWeight: "bold" },
   unit: { fontSize: 14 },
+  errorItem: {
+    backgroundColor: isDarkMode ? '#2c2c2c' : '#fff',
+    padding: 15,
+    borderRadius: 10,
+    marginBottom: 10,
+    shadowColor: isDarkMode ? '#000' : '#aaa',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.3,
+    shadowRadius: 4,
+    elevation: 4,
+  },
 });
 
 export default DashboardScreen;

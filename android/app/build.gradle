@@ -85,15 +85,15 @@ android {
 
     buildToolsVersion rootProject.ext.buildToolsVersion
     // compileSdk rootProject.ext.compileSdkVersion
-    compileSdkVersion 21
+    compileSdkVersion 35
 
-    namespace "com.applicationcarcare"
+    namespace 'com.anonymous.ApplicationCarCare'
     defaultConfig {
-        applicationId "com.applicationcarcare"
+        applicationId 'com.anonymous.ApplicationCarCare'
         minSdkVersion rootProject.ext.minSdkVersion
         targetSdkVersion rootProject.ext.targetSdkVersion
         versionCode 1
-        versionName "1.0"
+        versionName "1.0.0"
     }
     signingConfigs {
         debug {

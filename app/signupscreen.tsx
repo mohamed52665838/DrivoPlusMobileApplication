@@ -1,151 +1,192 @@
-import React, { useState } from 'react'
-import { View, ScrollView, Alert } from 'react-native'
-import { Controller, useForm } from 'react-hook-form'
-import { Button, Divider, TextInput, Text, useTheme } from 'react-native-paper'
-import { textEditStyle } from '@/components/ui/TextEditStyle'
-import { router } from 'expo-router'
-import { buttonStyle } from '@/components/ui/ButtonEditStyle'
-import { AxiosError } from 'axios'
-import networkErrorTranslation from '@/utils/network.translation'
-import { signupRequest } from '@/serviers/Registration.servcie.rn'
-import { storeApiKey, TokenStructure } from '@/utils/secure.session'
-import { useTranslation } from 'react-i18next'
-
-
+import React, { useState } from 'react';
+import { View, StyleSheet, Alert } from 'react-native';
+import { Controller, useForm } from 'react-hook-form';
+import { Button, Text, TextInput, Divider } from 'react-native-paper';
+import { router } from 'expo-router';
+import { signupRequest } from '@/serviers/Registration.servcie.rn';
+import { AxiosError } from 'axios';
+import networkErrorTranslation from '@/utils/network.translation';
+import { storeApiKey, TokenStructure } from '@/utils/secure.session';
+import { useTranslation } from 'react-i18next';
+import { LinearGradient } from 'expo-linear-gradient';
 
 const SignupScreen = () => {
-  const [isVisible, setVisibility] = useState(false)
-  const [userName, setUserName] = useState('')
-  const {register, handleSubmit, control,formState: {errors, isSubmitting}} = useForm<SignupFields>()
+  const [isVisible, setVisibility] = useState(false);
+  const { handleSubmit, control, formState: { errors, isSubmitting } } = useForm<SignupFields>();
+  const { t } = useTranslation();
 
-  const signup = async (data: SignupFields)  => {
-    data.username = data.email
+  const signup = async (data: SignupFields) => {
+    data.username = data.email;
     const response = await signupRequest(data).catch((e: AxiosError) => {
       const [title, message] = networkErrorTranslation(e);
-      Alert.alert(title, message)
-    }).catch((e) => 
-      Alert.alert('Sorry', 'unexpectd error just happned')
-  );
+      Alert.alert(title, message);
+    });
 
-  if(response != null) {
-    data.username = data.email
-    if(response.data) {
-      storeApiKey(response.data.access_token, TokenStructure.TOKEN)
-      storeApiKey(response.data.refresh_token, TokenStructure.REFRESH_TOKEN)
-      router.replace(`/confirmotp?email=${data.email}`)
+    if (response?.data) {
+      storeApiKey(response.data.access_token, TokenStructure.TOKEN);
+      storeApiKey(response.data.refresh_token, TokenStructure.REFRESH_TOKEN);
+      router.replace(`/confirmotp?email=${data.email}`);
+    }
+  };
 
-      // const isSent = await sendOtpTokenCode({email: data.email})
-      // if(isSent) {
-      //   console.log('redirect ot confimration') 
-      // }
-      // else {
-      //   router.replace('/?eConf=0' )
-      // }
-
-    }else 
-      // maybe !
-      throw new Error("unexpected action just happned: signup response not null but the data is unvalid")
-  }
-
-  }
-
-
-
-  const { t } = useTranslation()
-
-  // const sendOtpTokenCode = async (otpPayloadSend: OtpPayloadSend): Promise<boolean> => {
-  //   const response = await sendOtpToken(otpPayloadSend)
-  //   .catch((e: AxiosError) => {
-  //     const [title, message] = networkErrorTranslation(e); Alert.alert(title, message + "\nso we couldn't send the verification, don't worry you can verify later!")
-  //   })
-  //   if(response == null || response.data == null) {
-  //     return false
-  //   } 
-  //  return true; 
-  // }
-
-  const theme = useTheme()
   return (
-    <ScrollView style={{flex: 1, paddingVertical: 32}}>
-    <View style={{paddingHorizontal: 16, flex: 1, justifyContent: 'center'}} >
-      <View style={{alignItems: 'center', paddingBottom: '10%'}}>
-        <Text variant='headlineSmall' style={{ fontWeight: 'bold', color:  theme.colors.primary }}>
-        {t('signup.signup')}
-        </Text>
-      </View>
-        <View style={{marginVertical: 8}}>
+    <LinearGradient colors={['#ffffff', '#e8f5e9']} style={styles.container}>
+      <View style={styles.formContainer}>
+        <Text style={styles.title}>Drivo +</Text>
+               <Text style={styles.subtitle}>Welcome back, car lover 🚗</Text>
+
         <Controller
-          name='full_name'
+          name="full_name"
           control={control}
-          render={ ({field: {onChange,onBlur,value}}) => {
-            return (
-                <TextInput  style={textEditStyle.normal} autoComplete='off' autoCorrect={false} autoCapitalize='none' onBlur={onBlur}  onChangeText={onChange} value={value} mode='flat' label={t('signup.fullname')} left= {<TextInput.Icon icon='account-outline'/>} />
-            )
-          }
-          }
-          rules={{required: true, minLength: 3}}
-          />
-            {errors?.full_name && <Text variant='labelSmall' style={{color: 'red'}}>name at least three character</Text>}
+          render={({ field: { onChange, onBlur, value } }) => (
+            <TextInput
+              label={t('signup.fullname')}
+              value={value}
+              onChangeText={onChange}
+              onBlur={onBlur}
+              mode="outlined"
+              style={styles.input}
+              left={<TextInput.Icon icon="account" />}
+            />
+          )}
+          rules={{ required: true, minLength: 3 }}
+        />
+        {errors.full_name && <Text style={styles.error}>Name must be at least 3 characters</Text>}
+
         <Controller
-          name='email'
+          name="email"
           control={control}
-          render={ ({field: {onChange,onBlur,value}}) => {
-            return (
-                <TextInput  style={textEditStyle.normal} autoComplete='off' autoCorrect={false} autoCapitalize='none' onBlur={onBlur}  onChangeText={onChange} value={value} mode='flat' label={t('signup.email')} left= {<TextInput.Icon icon='email-outline'/>} />
-            )
-          }
-          }
-          rules={{pattern: /^[a-zA-Z]+[a-zA-Z0-9#!`._+-]*[a-zA-Z0-9]*@[a-z]+(\.[a-z])+/, required: true}}
-          />
-            {errors?.email && <Text variant='labelSmall' style={{color: 'red'}}>email invalid</Text>}
+          render={({ field: { onChange, onBlur, value } }) => (
+            <TextInput
+              label={t('signup.email')}
+              value={value}
+              onChangeText={onChange}
+              onBlur={onBlur}
+              mode="outlined"
+              style={styles.input}
+              left={<TextInput.Icon icon="email" />}
+            />
+          )}
+          rules={{ pattern: /^[a-zA-Z]+[a-zA-Z0-9#!`._+-]*[a-zA-Z0-9]*@[a-z]+(\.[a-z])+/, required: true }}
+        />
+        {errors.email && <Text style={styles.error}>Please enter a valid email</Text>}
+
         <Controller
-          name='phone_number'
+          name="phone_number"
           control={control}
-          render={ ({field: {onChange,onBlur,value}}) => {
-            return (
-                <TextInput keyboardType='phone-pad'  style={textEditStyle.normal} autoComplete='off' autoCorrect={false} autoCapitalize='none' onBlur={onBlur}  onChangeText={onChange} value={value} mode='flat' label={t('signup.phonenumber')} left= {<TextInput.Icon icon='phone-outline'/>} />
-            )
-          }
-          }
-          rules={{pattern: /^(\+216 ?)?[25793][0-9]{7}$/, required: true}}
-          />
-            {errors?.phone_number && <Text variant='labelSmall' style={{color: 'red'}}>valid tunisian phone number</Text>}
+          render={({ field: { onChange, onBlur, value } }) => (
+            <TextInput
+              label={t('signup.phonenumber')}
+              value={value}
+              onChangeText={onChange}
+              onBlur={onBlur}
+              keyboardType="phone-pad"
+              mode="outlined"
+              style={styles.input}
+              left={<TextInput.Icon icon="phone" />}
+            />
+          )}
+          rules={{ pattern: /^(\+216 ?)?[25793][0-9]{7}$/, required: true }}
+        />
+        {errors.phone_number && <Text style={styles.error}>Please enter a valid phone number</Text>}
+
         <Controller
-          name='password'
+          name="password"
           control={control}
-          render={ ({field: {onChange,onBlur,value}}) => {
-            return (
-                <TextInput style={textEditStyle.normal} autoComplete='off' autoCorrect={false} autoCapitalize='none' onBlur={onBlur} secureTextEntry={!isVisible} left={<TextInput.Icon icon='lock-outline'/>}  right={<TextInput.Icon icon={(isVisible) ? 'eye-off': 'eye' } style={{marginTop: 16}} onPress={() => setVisibility((value) => !value)} />} onChangeText={onChange} value={value} mode='flat' label={t('signup.password')} />
-            )
-          }
-          }
-          rules={{required: true, minLength: 8 }} 
-          />
-            {errors?.password && <Text variant='labelSmall' style = {{color: 'red'}}> password at least 8 characters </Text>}
-        </View>
-          <Button style={buttonStyle.normal} mode='outlined' disabled={isSubmitting}  onPress={handleSubmit(signup)} loading ={isSubmitting}>
-            Get Started 
+          render={({ field: { onChange, onBlur, value } }) => (
+            <TextInput
+              label={t('signup.password')}
+              value={value}
+              onChangeText={onChange}
+              onBlur={onBlur}
+              secureTextEntry={!isVisible}
+              mode="outlined"
+              style={styles.input}
+              left={<TextInput.Icon icon="lock" />}
+              right={
+                <TextInput.Icon
+                  icon={isVisible ? 'eye-off' : 'eye'}
+                  onPress={() => setVisibility(!isVisible)}
+                />
+              }
+            />
+          )}
+          rules={{ required: true, minLength: 8 }}
+        />
+        {errors.password && <Text style={styles.error}>Password must be at least 8 characters</Text>}
+
+        <Button
+          mode="contained"
+          onPress={handleSubmit(signup)}
+          loading={isSubmitting}
+          disabled={isSubmitting}
+          style={styles.signupButton}
+        >
+          Sign Up
+        </Button>
+
+        <Divider style={styles.divider} />
+
+        <View style={styles.footer}>
+          <Text style={styles.footerText}>Already have an account?</Text>
+          <Button onPress={() => router.push('/')} textColor="#4CAF50">
+            Sign In
           </Button>
-          <Divider style = {{borderColor: 'gray', borderBlockColor: 'gray', borderWidth: 0.5, marginVertical: 16}}/>
-          <View style= {{justifyContent: 'center', alignItems: 'center'}}>
-             <Text>
-              {t('signup.yhac')}
-             </Text>
-            <Button onPress={() => router.push('/')}>
-            {t('signup.backsignin')}
-            </Button>
-          </View>
-          <Divider style = {{borderColor: 'gray', borderBlockColor: 'gray', borderWidth: 0.5, marginVertical: 16}}/>
-          <Text variant='labelMedium' >
-            {<Text variant='labelMedium'  style={{fontWeight: 'bold'}}>*IMPORTENT:</Text>} {t('signup.important')}
-          </Text>
-    </View>
-    </ScrollView>
-  )
-}
+        </View>
+      </View>
+    </LinearGradient>
+  );
+};
 
-SignupScreen.propTypes = {
+export default SignupScreen;
 
-}
-
-export default SignupScreen
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    backgroundColor: '#ffffff',
+  },
+  formContainer: {
+    paddingHorizontal: 24,
+    paddingTop: 16,
+  },
+  title: {
+    fontSize: 28,
+    fontWeight: 'bold',
+    color: '#229954',
+    textAlign: 'center',
+  },
+  subtitle: {
+    fontSize: 14,
+    color: '#888',
+    textAlign: 'center',
+    marginBottom: 24,
+  },
+  input: {
+    marginBottom: 16,
+    backgroundColor: '#F7F7F7',
+    borderRadius: 10,
+  },
+  signupButton: {
+    backgroundColor: '#4CAF50',
+    borderRadius: 10,
+    marginTop: 8,
+  },
+  error: {
+    fontSize: 12,
+    color: 'red',
+    marginBottom: 8,
+  },
+  divider: {
+    borderColor: 'gray',
+    borderBlockColor: 'gray',
+    borderWidth: 0.5,
+    marginVertical: 16,
+  },
+  footer: {
+    alignItems: 'center',
+    marginTop: 20,
+  },
+  footerText: {
+    color: '#888',
+  },
+});

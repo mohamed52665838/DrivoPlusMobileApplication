@@ -1,5 +1,11 @@
+// android/settings.gradle
+
 pluginManagement {
-    includeBuild(new File(["node", "--print", "require.resolve('@react-native/gradle-plugin/package.json', { paths: [require.resolve('react-native/package.json')] })"].execute(null, rootDir).text.trim()).getParentFile().toString())
+    includeBuild(new File(
+        ["node", "--print", "require.resolve('@react-native/gradle-plugin/package.json', { paths: [require.resolve('react-native/package.json')] })"]
+            .execute(null, rootDir).text.trim()
+        ).getParentFile().toString()
+    )
 }
 plugins { id("com.facebook.react.settings") }
 
@@ -21,18 +27,36 @@ extensions.configure(com.facebook.react.ReactSettingsExtension) { ex ->
   }
 }
 
-rootProject.name = 'ApplicationCarCare'
+rootProject.name = 'Application-Car-Care'
 
 dependencyResolutionManagement {
   versionCatalogs {
     reactAndroidLibs {
-      from(files(new File(["node", "--print", "require.resolve('react-native/package.json')"].execute(null, rootDir).text.trim(), "../gradle/libs.versions.toml")))
+      from(files(new File(
+        ["node", "--print", "require.resolve('react-native/package.json')"].execute(null, rootDir).text.trim(),
+        "../gradle/libs.versions.toml"
+      )))
     }
   }
 }
 
-apply from: new File(["node", "--print", "require.resolve('expo/package.json')"].execute(null, rootDir).text.trim(), "../scripts/autolinking.gradle");
+apply from: new File(
+  ["node", "--print", "require.resolve('expo/package.json')"].execute(null, rootDir).text.trim(),
+  "../scripts/autolinking.gradle"
+)
 useExpoModules()
 
 include ':app'
-includeBuild(new File(["node", "--print", "require.resolve('@react-native/gradle-plugin/package.json', { paths: [require.resolve('react-native/package.json')] })"].execute(null, rootDir).text.trim()).getParentFile())
+
+// === Inclusion du module natif background-service-tracking ===
+include ':react-native-background-service-tracking'
+project(':react-native-background-service-tracking').projectDir = new File(
+  rootProject.projectDir,
+  '../react-native-background-service-tracking/android'
+)
+
+includeBuild(new File(
+  ["node", "--print", "require.resolve('@react-native/gradle-plugin/package.json', { paths: [require.resolve('react-native/package.json')] })"]
+    .execute(null, rootDir).text.trim()
+  ).getParentFile()
+)

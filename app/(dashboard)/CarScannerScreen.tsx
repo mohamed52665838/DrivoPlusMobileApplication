@@ -1,205 +1,236 @@
 import React, { useState } from "react";
-import { View, Text, TouchableOpacity, FlatList, StyleSheet,Alert } from "react-native";
+import {
+  View,
+  Text,
+  TouchableOpacity,
+  FlatList,
+  StyleSheet,
+  Alert,
+  Animated,
+} from "react-native";
 import { Ionicons, MaterialCommunityIcons, FontAwesome5 } from "@expo/vector-icons";
-import { useRouter } from "expo-router"; // Import router
+import { useRouter } from "expo-router";
+import { LinearGradient } from "expo-linear-gradient";
+import { AppThemedView } from "@/components/ui/AppThemedView";
+import { useTheme } from "@/app/ThemeProvider"; // Assuming you're using your custom ThemeProvider
 
-// Define FeatureItem Type
 interface FeatureItem {
   name: string;
   icon: string;
   library: any;
-  route?: string; // Add a route property
-
+  route?: string;
 }
 
-// Features List
 const features: FeatureItem[] = [
-  { name: "Dashboard", icon: "speedometer", library: MaterialCommunityIcons,route: "/OBD/dashboard" },
-  { name: "Live data", icon: "chart-line", library: MaterialCommunityIcons,route: "/OBD/detailCar" },
- // { name: "All sensors", icon: "sensor", library: MaterialCommunityIcons },
+  { name: "Dashboard", icon: "speedometer", library: MaterialCommunityIcons, route: "/OBD/dashboard" },
+  { name: "Live data", icon: "chart-line", library: MaterialCommunityIcons, route: "/OBD/detailCar" },
   { name: "Diagnostic trouble codes", icon: "car-battery", library: MaterialCommunityIcons, route: "/OBD/searchproblems" },
- // { name: "Freeze frame", icon: "database", library: FontAwesome5 },
   { name: "Noncontinuous Monitors", icon: "clipboard-list", library: FontAwesome5 },
-  { name: "My cars", icon: "car", library: MaterialCommunityIcons,route: "/OBD/MyCarsScreen" },
-  { name: "Settings", icon: "cog", library: FontAwesome5 },
+  { name: "My cars", icon: "car", library: MaterialCommunityIcons, route: "/OBD/MyCarsScreen" },
+ //  { name: "Settings", icon: "cog", library: FontAwesome5 },
   { name: "Statistics", icon: "chart-bar", library: FontAwesome5 },
-  { name: "Data recording", icon: "video", library: MaterialCommunityIcons,route: "/OBD/RecordDataScreen"  },
+  { name: "Data recording", icon: "video", library: MaterialCommunityIcons, route: "/OBD/RecordDataScreen" },
   { name: "Acceleration tests", icon: "speedometer", library: MaterialCommunityIcons, route: "/OBD/speedTest" },
   { name: "Emission tests", icon: "flask", library: FontAwesome5 },
-
 ];
 
 const HomeScreen: React.FC = () => {
-    const router = useRouter(); // Initialize router
-
+  const router = useRouter();
   const [isConnected, setIsConnected] = useState(false);
+  const { isDarkMode } = useTheme();
+
 
   const handleDemoClick = () => {
-    if(!isConnected) {
-    Alert.alert(
-      "Select Demo Mode",
-      "Smart car can show you all sensors available in the app with Demo mode.",
-      [
-        {
-          text: "Cancel",
-          style: "cancel",
-        },
-        {
-          text: "Agree",
-          onPress: () => setIsConnected((prev) => !prev),
-        },
-      ]
-    );
-} else {
-    setIsConnected(false)
-}
+    if (!isConnected) {
+      Alert.alert("Select Demo Mode", "View sensors in demo mode.", [
+        { text: "Cancel", style: "cancel" },
+        { text: "Agree", onPress: () => setIsConnected(true) },
+      ]);
+    } else {
+      setIsConnected(false);
+    }
   };
-  
 
   return (
-    <View style={styles.container}>
-      {/* Features Grid */}
+    <AppThemedView  style={styles.container}>
+      <Text style={styles.title}>Smart Car Diagnostics</Text>
+
       <FlatList
         data={features}
         numColumns={3}
         keyExtractor={(item) => item.name}
-        renderItem={({ item }) => (
-          <TouchableOpacity style={styles.featureItem  }  onPress={() => {
-            if (item.name === "Statistics") {
-              // Show alert instead of navigating
-              Alert.alert(
-                "Data Required",
-                "You need to record data first before accessing Statistics.",
-                [{ text: "OK" }]
-              );
-            } else {
-            if (isConnected) {
-              
-                if (item.route) {
-                  router.push(item.route as any); // Navigate if route exists
+        contentContainerStyle={{ paddingBottom: 20 }}
+        renderItem={({ item }) => {
+          const Icon = item.library;
+          return (
+            <TouchableOpacity
+              style={styles.featureItem}
+              onPress={() => {
+                if (item.name === "Statistics") {
+                  Alert.alert("Data Required", "You need to record data first.", [{ text: "OK" }]);
+                } else if (isConnected && item.route) {
+                  router.push(item.route as any);
+                } else if (!isConnected) {
+                  Alert.alert(
+                    "Not connected!",
+                    "Connect to an OBDII adapter or use Demo mode.",
+                    [{ text: "OK" }]
+                  );
                 }
-              } else {
-                Alert.alert("Not connected!", "You need to connect to OBDII adapter befor using diagnostic features ! You can also enable Demo mode to access without connecting to a real vehicle", [
-                  { text: "OK" },
-                ]);
-              }
-            }
-          } }>
-            <View style={styles.iconContainer}>
-              <item.library name={item.icon} size={45} color={isConnected ? "#1586AC" :  "#595959"} />
-            </View>
-            <Text style={styles.featureText}>{item.name}</Text>
-          </TouchableOpacity>
-        )}
+              }}
+            >
+              {isDarkMode ? (
+                <View style={[styles.iconContainer, { backgroundColor: "#1E1E1E" }]}>
+                  <Icon name={item.icon} size={36} color="white" />
+                </View>
+              ) : (
+                <LinearGradient colors={["#D0ECE7", "#ABEBC6"]} style={styles.iconContainer}>
+                  <Icon name={item.icon} size={36} color={isConnected ? "#145A32" : "#17202A"} />
+                </LinearGradient>
+              )}
+              <Text style={[styles.featureText, isDarkMode && { color: "#eee" }]}>{item.name}</Text>
+            </TouchableOpacity> 
+          );
+        }}
+        
       />
 
-      {/* Connection Status */}
-      <View style={styles.connectionContainer}>
-        <View style={styles.connectionRow}>
-          <Text style={styles.connectionLabel}>ELM connection:</Text>
-          <Text style={isConnected ? styles.connected : styles.disconnected}>
-            {isConnected ? "Connected" : "Disconnected"}
-          </Text>
-        </View>
-        <View style={styles.connectionRow}>
-          <Text style={styles.connectionLabel}>ECU connection:</Text>
-          <Text style={isConnected ? styles.connected : styles.disconnected}>
-            {isConnected ? "Connected" : "Disconnected"}
-          </Text>
-        </View>
-      </View>
+      {/* Connection Status Section */}
+      <View
+  style={[
+    styles.connectionContainer,
+    isDarkMode && { backgroundColor: "#1E1E1E", borderColor: "#555" },
+  ]}
+>
+  {["ELM connection", "ECU connection"].map((label, index) => (
+    <View key={index} style={styles.connectionRow}>
+      <Ionicons
+        name={isConnected ? "radio-button-on" : "radio-button-off"}
+        size={22}
+        color={isConnected ? "#0BAF5D" : "#D32F2F"}
+        style={styles.icon}
+      />
+      <Text
+        style={[
+          styles.connectionLabel,
+          isDarkMode && { color: "#fff" },
+        ]}
+      >
+        {label}
+      </Text>
+    </View>
+  ))}
+</View>
 
-      {/* Buttons */}
+
+      {/* Action Buttons */}
       <View style={styles.buttonContainer}>
         <TouchableOpacity style={[styles.button, styles.connectButton]}>
-          <Text style={styles.buttonText}>CONNECT</Text>
+          <Ionicons name="bluetooth" size={20} color="#fff" />
+          <Text style={styles.buttonText}>Connect</Text>
         </TouchableOpacity>
+
         <TouchableOpacity
           style={[styles.button, isConnected ? styles.stopDemoButton : styles.demoButton]}
           onPress={handleDemoClick}
         >
+          <Ionicons name={isConnected ? "stop-circle" : "play-circle"} size={20} color="#fff" />
           <Text style={styles.buttonText}>{isConnected ? "Stop Demo" : "Demo"}</Text>
         </TouchableOpacity>
       </View>
-
-      {/* Upgrade Banner */}
-      <View style={styles.upgradeBanner}>
-        <Text style={styles.upgradeText}>
-          🚀 Upgrade to Car Scanner Pro! No ads! No limits! Low price!
-        </Text>
-      </View>
-    </View>
+    </AppThemedView>
   );
 };
 
 const styles = StyleSheet.create({
-  container: { flex: 1, backgroundColor: "#F7F9FC", padding: 15 },
-
-  // Feature Icons & Grid
+  container: {
+    flex: 1,
+    padding: 16,
+  },
+  title: {
+    fontSize: 24,
+    fontWeight: "bold",
+    marginBottom: 10,
+    color: "#145A32",
+    textAlign: "center",
+  },
   featureItem: {
     flex: 1,
+    margin: 6,
     alignItems: "center",
-    margin: 12,
-    backgroundColor: "#fff",
-    padding: 15,
-    borderRadius: 15,
-    shadowColor: "#000",
-    shadowOpacity: 0.1,
-    shadowRadius: 5,
-    elevation: 3, // Android shadow
   },
-  featureText: { fontSize: 14, textAlign: "center", marginTop: 8, fontWeight: "500" },
-  iconContainer: { padding: 10 },
-
-  // Connection Status
-  connectionContainer: {
-    backgroundColor: "#fff",
+  iconContainer: {
     padding: 15,
-    marginTop: 15,
-    borderRadius: 10,
+    borderRadius: 20,
+    backgroundColor: "#fff",
     shadowColor: "#000",
     shadowOpacity: 0.1,
+    shadowRadius: 6,
+    elevation: 5,
+  },
+  featureText: {
+    marginTop: 8,
+    fontSize: 13,
+    textAlign: "center",
+    fontWeight: "600",
+    color: "#333",
+  },
+  connectionContainer: {
+    backgroundColor: "#FFFFFF",
+    padding: 18,
+    borderRadius: 12,
+    marginTop: 20,
+    borderWidth: 1,
+    borderColor: "#DDE",
+    shadowColor: "#000",
+    shadowOpacity: 0.05,
     shadowRadius: 4,
     elevation: 2,
   },
   connectionRow: {
     flexDirection: "row",
-    justifyContent: "space-between",
     alignItems: "center",
-    marginBottom: 10,
+    marginBottom: 12,
   },
-  connectionLabel: { fontSize: 16, fontWeight: "500", color: "#333" },
-  connected: { color: "#0BAF5D", fontSize: 16, fontWeight: "600" },
-  disconnected: { color: "#D32F2F", fontSize: 16, fontWeight: "600" },
-
-  // Buttons
+  connectionLabel: {
+    fontSize: 15,
+    color: "#333",
+    marginLeft: 10,
+    fontWeight: "500",
+  },
+  icon: {
+    marginRight: 5,
+  },
   buttonContainer: {
     flexDirection: "row",
+    marginTop: 25,
     justifyContent: "space-between",
-    marginTop: 20,
+    marginBottom : 70
   },
   button: {
-    paddingVertical: 12,
-    paddingHorizontal: 20,
-    borderRadius: 12,
+    flexDirection: "row",
     alignItems: "center",
     flex: 1,
     marginHorizontal: 5,
+    paddingVertical: 12,
+    justifyContent: "center",
+    borderRadius: 14,
   },
-  connectButton: { backgroundColor: "#0BAF5D" }, // Green for connect
-  demoButton: { backgroundColor: "#1586AC" }, // Blue for demo
-  stopDemoButton: { backgroundColor: "#D32F2F" }, // Red for stopping demo
-  buttonText: { color: "#fff", fontSize: 16, fontWeight: "bold" },
-
-  // Upgrade Banner
-  upgradeBanner: {
-    backgroundColor: "#FFF3CD",
-    padding: 12,
-    marginTop: 20,
-    borderRadius: 10,
-    alignItems: "center",
+  connectButton: {
+    backgroundColor: "#0BAF5D",
   },
-  upgradeText: { fontSize: 14, fontWeight: "500", color: "#856404" },
+  demoButton: {
+    backgroundColor: "#1586AC",
+  },
+  stopDemoButton: {
+    backgroundColor: "#D32F2F",
+  },
+  buttonText: {
+    color: "#fff",
+    fontWeight: "bold",
+    marginLeft: 8,
+    fontSize: 15,
+  },
 });
 
 export default HomeScreen;

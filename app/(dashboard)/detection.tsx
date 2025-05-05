@@ -1,9 +1,18 @@
-import React, { useState, useEffect } from "react";
-import { View, Text, FlatList, StyleSheet } from "react-native";
+import React, { useState } from "react";
+import {
+  View,
+  Text,
+  FlatList,
+  StyleSheet,
+  Image,
+  useColorScheme,
+} from "react-native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import { Ionicons } from "@expo/vector-icons";
+import { Ionicons, MaterialCommunityIcons } from "@expo/vector-icons";
 import { ProgressBar } from "react-native-paper";
 import { useFocusEffect } from "@react-navigation/native";
+import { useTheme } from "../ThemeProvider";
+import { AppThemedView } from "@/components/ui/AppThemedView";
 
 interface Car {
   id: string;
@@ -18,160 +27,245 @@ interface Car {
 
 export default function CarHistoryScreen() {
   const [cars, setCars] = useState<Car[]>([]);
+  const { isDarkMode } = useTheme();
 
   useFocusEffect(
     React.useCallback(() => {
-      setCars([]); // 🔄 Vider la liste avant le chargement
-      loadCars();  // 🔄 Recharger les nouvelles voitures
+      setCars([]);
+      loadCars();
     }, [])
   );
- 
 
   const loadCars = async () => {
     try {
-        const storedCars = await AsyncStorage.getItem("cars");
-        if (storedCars) {
-            const carList = JSON.parse(storedCars);
-            console.log("📌 Voitures chargées :", carList); // 🔍 Vérification console
-            setCars(carList);
-        } else {
-            console.log("🚨 Aucune voiture trouvée !");
-        }
+      const storedCars = await AsyncStorage.getItem("cars");
+      if (storedCars) {
+        const carList = JSON.parse(storedCars);
+        setCars(carList);
+      }
     } catch (error) {
-        console.error("❌ Erreur de chargement des voitures :", error);
+      console.error("Error loading cars:", error);
     }
-};
-
- 
+  };
 
   return (
-    <View style={styles.container}>
-      <FlatList
-        data={cars}
-        keyExtractor={(item) => item.id}
-        renderItem={({ item }) => (
-          <View style={styles.carCard}>
-            {/* 🔹 En-tête */}
-            <View style={styles.header}>
-              <Ionicons name="car-sport-outline" size={26} color="#0D6EFD" />
-              <Text style={styles.carTitle}>
-                {item.name} - {item.make} {item.model} ({item.year})
-              </Text>
-            </View>
+    <AppThemedView style={styles.container}>
+      <View
+        style={[
+          styles.headerContainer,
+          { backgroundColor: isDarkMode ? "#2E7D32" : "#A5D6A7" },
+        ]}
+      >
+        <MaterialCommunityIcons name="clipboard-list" size={28} color="white" />
+        <Text style={[styles.headerTitle, { color: "white" }]}>
+          Car Inspection History
+        </Text>
+      </View>
 
-            {/* 📌 VIN */}
-            {item.vin && <Text style={styles.vin}>🔢 VIN: {item.vin}</Text>}
+      {cars.length === 0 ? (
+        <View style={styles.emptyContainer}>
+          <Ionicons
+            name="car-sport"
+            size={60}
+            color={isDarkMode ? "#666" : "#ccc"}
+          />
+          <Text style={[styles.emptyText, { color: isDarkMode ? "#aaa" : "#777" }]}>
+            No inspections found.
+          </Text>
+          <Text style={[styles.emptySubText, { color: isDarkMode ? "#888" : "#aaa" }]}>
+            Your inspected cars will appear here 🚘
+          </Text>
+        </View>
+      ) : (
+        <FlatList
+          data={cars}
+          keyExtractor={(item) => item.id}
+          renderItem={({ item }) => (
+            <View
+              style={[
+                styles.carCard,
+                {
+                  backgroundColor: isDarkMode ? "#1E1E1E" : "#fff",
+                  shadowColor: isDarkMode ? "#000" : "#ccc",
+                },
+              ]}
+            >
+              <View style={styles.infoSection}>
+                <View style={styles.header}>
+                  <Ionicons name="car-sport-outline" size={22} color="#1F618D" />
+                  <Text
+                    style={[
+                      styles.carTitle,
+                      { color: isDarkMode ? "#BBDEFB" : "#1F618D" },
+                    ]}
+                  >
+                    {item.name} - {item.make} {item.model} ({item.year})
+                  </Text>
+                </View>
 
-            {/* 🚨 Dommages détectés */}
-            {item.damage && item.damage.length > 0 ? (
-              <View style={styles.damageContainer}>
-                <Text style={styles.damageTitle}>🚨 Dommages détectés :</Text>
-                {item.damage.map((d, index) => (
-                  <View key={index} style={styles.damageRow}>
-                    <Text style={styles.damageText}>
-                      🛑 {d.class} ({Math.round(d.confidence * 100)}%)
-                    </Text>
-                    <ProgressBar
-                      progress={d.confidence}
-                      color="red"
-                      style={styles.progressBar}
-                    />
+                {item.vin && (
+                  <Text style={[styles.vin, { color: isDarkMode ? "#bbb" : "#555" }]}>
+                    🔢 VIN: {item.vin}
+                  </Text>
+                )}
+
+                {/* 🚨 Damages */}
+                {item.damage && item.damage.length > 0 ? (
+                  <View
+                    style={[
+                      styles.damageContainer,
+                      { backgroundColor: isDarkMode ? "#3B0000" : "#FFF0F0" },
+                    ]}
+                  >
+                    <Text style={styles.damageTitle}>🚨 Detected Damage:</Text>
+                    {item.damage.map((d, index) => (
+                      <View key={index} style={styles.damageRow}>
+                        <Text style={styles.damageText}>
+                          🛑 {d.class} ({Math.round(d.confidence * 100)}%)
+                        </Text>
+                        <ProgressBar
+                          progress={d.confidence}
+                          color="#FF4C4C"
+                          style={styles.progressBar}
+                        />
+                      </View>
+                    ))}
                   </View>
-                ))}
-              </View>
-            ) : (
-              <View style={styles.noDamageContainer}>
-                <Ionicons name="checkmark-circle" size={18} color="green" />
-                <Text style={styles.noDamageText}>Aucun dommage enregistré.</Text>
-              </View>
-            )}
+                ) : (
+                  <View
+                    style={[
+                      styles.noDamageContainer,
+                      { backgroundColor: isDarkMode ? "#264D26" : "#E6F4EA" },
+                    ]}
+                  >
+                    <Ionicons name="checkmark-circle" size={18} color="#4CAF50" />
+                    <Text style={styles.noDamageText}>No damage detected.</Text>
+                  </View>
+                )}
 
-            {/* 💰 Coût estimé */}
-            {item.cost ? (
-              <View style={styles.costContainer}>
-                <Ionicons name="cash-outline" size={22} color="green" />
-                <Text style={styles.costText}> {item.cost} TND</Text>
+                {/* 💰 Cost */}
+                {item.cost ? (
+                  <View style={styles.costContainer}>
+                    <Ionicons name="cash-outline" size={22} color="green" />
+                    <Text style={styles.costText}> {item.cost} TND</Text>
+                  </View>
+                ) : (
+                  <View
+                    style={[
+                      styles.noCostContainer,
+                      { backgroundColor: isDarkMode ? "#333" : "#F0F0F0" },
+                    ]}
+                  >
+                    <Ionicons name="information-circle" size={18} color="#999" />
+                    <Text style={styles.noCostText}>Cost not available</Text>
+                  </View>
+                )}
               </View>
-            ) : (
-              <View style={styles.noCostContainer}>
-                <Ionicons name="information-circle" size={18} color="#888" />
-                <Text style={styles.noCostText}>Coût non disponible.</Text>
-              </View>
-            )}
-          </View>
-        )}
-      />
-    </View>
+            </View>
+          )}
+        />
+      )}
+    </AppThemedView>
   );
 }
 
-// ✅ **Styles améliorés**
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "#F8F9FA",
-    padding: 10,
+    padding: 12,
+  },
+
+  headerContainer: {
+    flexDirection: "row",
+    alignItems: "center",
+    padding: 15,
+    borderRadius: 12,
+    marginBottom: 15,
+  },
+
+  headerTitle: {
+    fontSize: 18,
+    fontWeight: "bold",
+    marginLeft: 10,
+  },
+
+  emptyContainer: {
+    flex: 1,
+    justifyContent: "center",
+    alignItems: "center",
+    paddingTop: 60,
+  },
+
+  emptyText: {
+    fontSize: 20,
+    fontWeight: "600",
+    marginTop: 15,
+  },
+
+  emptySubText: {
+    fontSize: 14,
+    marginTop: 8,
   },
 
   carCard: {
-    backgroundColor: "#fff",
-    borderRadius: 10,
-    padding: 15,
-    marginBottom: 15,
-    elevation: 3,
-    shadowColor: "#000",
+    borderRadius: 12,
+    padding: 12,
+    marginBottom: 20,
+    flexDirection: "row",
     shadowOpacity: 0.1,
     shadowOffset: { width: 1, height: 2 },
+    elevation: 3,
+  },
+
+  infoSection: {
+    flex: 1,
   },
 
   header: {
     flexDirection: "row",
     alignItems: "center",
-    marginBottom: 10,
+    marginBottom: 6,
   },
 
   carTitle: {
-    fontSize: 16,
+    fontSize: 14,
     fontWeight: "bold",
-    color: "#0D6EFD",
-    marginLeft: 10,
+    marginLeft: 6,
   },
 
   vin: {
     fontSize: 12,
-    color: "#555",
     marginBottom: 5,
   },
 
   damageContainer: {
-    backgroundColor: "#FFE5E5",
-    borderRadius: 8,
-    padding: 10,
-    marginTop: 10,
+    borderRadius: 6,
+    padding: 8,
+    marginTop: 5,
   },
 
   damageTitle: {
-    fontSize: 14,
+    fontSize: 13,
     fontWeight: "bold",
-    color: "#D9534F",
-    marginBottom: 5,
+    color: "#D32F2F",
+    marginBottom: 4,
   },
 
   damageRow: {
     flexDirection: "row",
     alignItems: "center",
     justifyContent: "space-between",
-    marginBottom: 5,
+    marginBottom: 4,
   },
 
   damageText: {
-    fontSize: 14,
-    color: "#D9534F",
+    fontSize: 13,
+    color: "#D32F2F",
   },
 
   progressBar: {
-    width: "50%",
-    height: 8,
+    width: "45%",
+    height: 6,
     borderRadius: 5,
   },
 
@@ -179,46 +273,43 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     alignItems: "center",
     marginTop: 10,
-    backgroundColor: "#E3FCEC",
-    padding: 10,
-    borderRadius: 8,
+    backgroundColor: "#E6F4EA",
+    padding: 8,
+    borderRadius: 6,
   },
 
   costText: {
-    fontSize: 16,
+    fontSize: 14,
     fontWeight: "bold",
-    color: "#28A745",
+    color: "#388E3C",
     marginLeft: 5,
   },
 
   noDamageContainer: {
     flexDirection: "row",
     alignItems: "center",
-    marginTop: 10,
-    backgroundColor: "#E3FCEC",
-    padding: 8,
-    borderRadius: 8,
+    marginTop: 8,
+    padding: 6,
+    borderRadius: 6,
   },
 
   noDamageText: {
-    fontSize: 14,
-    fontWeight: "bold",
-    color: "#28A745",
-    marginLeft: 5,
+    fontSize: 13,
+    fontWeight: "500",
+    color: "#388E3C",
+    marginLeft: 6,
   },
 
   noCostContainer: {
     flexDirection: "row",
     alignItems: "center",
-    marginTop: 10,
-    backgroundColor: "#F0F0F0",
-    padding: 8,
-    borderRadius: 8,
+    marginTop: 8,
+    padding: 6,
+    borderRadius: 6,
   },
 
   noCostText: {
-    fontSize: 14,
-    color: "#888",
-    marginLeft: 5,
+    fontSize: 13,
+    marginLeft: 6,
   },
 });

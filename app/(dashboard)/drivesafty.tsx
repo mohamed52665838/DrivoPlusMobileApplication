@@ -16,6 +16,8 @@ import Svg, { Rect, Text as SvgText } from "react-native-svg";
 import axios from "axios";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { useNavigation } from "@react-navigation/native";
+import { AppThemedView } from "@/components/ui/AppThemedView";
+import { useTheme } from "../ThemeProvider";
 
 // ✅ Définition du type Car
 interface Car {
@@ -42,7 +44,7 @@ export default function DetectionScreen() {
   const [cars, setCars] = useState<Car[]>([]);
   const [selectedCar, setSelectedCar] = useState<Car | null>(null);
   const [carSelectionModal, setCarSelectionModal] = useState(false);
-
+  const { isDarkMode } = useTheme();
   useEffect(() => {
     loadCars();
   }, []);
@@ -183,7 +185,6 @@ const saveDamageToCar = async () => {
  
     /* 📌 Style des boutons */
     button: {
-      backgroundColor: "#4DA8DA",
       paddingVertical: 10,
       paddingHorizontal: 10,
       borderRadius: 40,
@@ -309,7 +310,7 @@ const saveDamageToCar = async () => {
   });
  
   return (
-    <View style={styles.container}>
+    <AppThemedView style={styles.container}>
       {/* 📌 Icône pour voir l'historique */}
       <TouchableOpacity
         style={styles.iconButton}
@@ -319,21 +320,24 @@ const saveDamageToCar = async () => {
       </TouchableOpacity>
 
       {/* 📌 Sélectionner une voiture existante */}
-      <TouchableOpacity style={styles.button} onPress={() => setCarSelectionModal(true)}>
+      <TouchableOpacity style={[styles.button,  { backgroundColor: isDarkMode ? "#2E7D32" : "#A5D6A7" },]}  onPress={() => setCarSelectionModal(true)}>
         <Text style={styles.buttonText}>Associer à une voiture</Text>
       </TouchableOpacity>
       {/* 📌 Affichage des détails de la voiture sélectionnée */}
       {selectedCar && (
-        <View style={styles.detailsContainer}>
-          <Text style={styles.carName}>{selectedCar.name}</Text>
-          <Text>{selectedCar.make} {selectedCar.model} ({selectedCar.year})</Text>
-        </View>
+     <View style={styles.detailsContainer}>
+     <Text style={styles.carName}>
+       🚗 {selectedCar.make} {selectedCar.model} ({selectedCar.year})
+     </Text>
+     <Text style={{ marginTop: 8 }}>Nom: {selectedCar.name}</Text>
+     <Text>VIN: {selectedCar.vin || "Non spécifié"}</Text>
+   </View>
       )}
 
       {/* 📌 Bouton Ajouter Image */}
       {selectedCar && (
-        <TouchableOpacity style={styles.button} onPress={pickImage}>
-          <Text style={styles.buttonText}>Ajouter une Image</Text>
+        <TouchableOpacity style={[styles.button,{ backgroundColor: isDarkMode ? "#2E7D32" : "#A5D6A7" },]} onPress={pickImage}>
+          <Text style={[styles.buttonText,]}>Ajouter une Image</Text>
         </TouchableOpacity>
       )}
 
@@ -401,6 +405,6 @@ const saveDamageToCar = async () => {
           </TouchableOpacity>
         )} />
       </Modal>
-    </View>
+    </AppThemedView>
   );
 }

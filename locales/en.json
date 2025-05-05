@@ -29,7 +29,8 @@
         "home": "Home",
         "damage": "Damage",
         "drivesafety": "Drive Safety",
-        "profile": "Profile"
+        "profile": "Profile",
+        "diagnostic": "diagnostic"
       },
       "navbaritems": {
         "damage": "Damage",

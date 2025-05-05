@@ -14,7 +14,7 @@ i18n
   .use(initReactI18next)
   .init({
     resources,
-    lng: Localization.locale, 
+    lng: Localization.getLocales()[0]?.languageTag, // ✅ updated here
     fallbackLng: 'en',
     interpolation: {
       escapeValue: false, 

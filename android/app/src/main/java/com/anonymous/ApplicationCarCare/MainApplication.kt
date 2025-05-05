@@ -2,7 +2,8 @@ package com.anonymous.ApplicationCarCare
 
 import android.app.Application
 import android.content.res.Configuration
-
+import com.backgroundservicetracking.CallDetectionPackage
+import com.backgroundservicetracking.BackgroundServiceTrackingPackage
 import com.facebook.react.PackageList
 import com.facebook.react.ReactApplication
 import com.facebook.react.ReactNativeHost
@@ -25,6 +26,9 @@ class MainApplication : Application(), ReactApplication {
             val packages = PackageList(this).packages
             // Packages that cannot be autolinked yet can be added manually here, for example:
             // packages.add(new MyReactNativePackage());
+            packages.add(CallDetectionPackage())
+            packages.add(BackgroundServiceTrackingPackage())
+
             return packages
           }
 
