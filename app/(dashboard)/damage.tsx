@@ -40,8 +40,10 @@ import {
   superTrackingServiceStatus,
 } from "react-native-background-service-tracking";
 import { notificationPermissionAndroid } from "@/utils/getNotificationPermissionCommand";
+import { startBackgroundTrackingCommand } from "@/serviers/tracking-commmends/startBackgroundTrackingCommand";
+import { stopBackgroundServiceCommand } from "@/serviers/tracking-commmends/stopBackgrounTrackingCommand";
 
-const soundMp = require("@/assets/sound/metal-pipe-230698.mp3");
+const soundMp = require("@/assets/sound/alarm-301729.mp3");
 
 export default function Damage() {
   const { theme } = useTheme();
@@ -304,30 +306,6 @@ export default function Damage() {
     );
   }, []);
 
-  const startSuperSafety = () => {
-    checkAccessibilityPermission().then((value) => {
-      if (!value) {
-        requestAccessibilityService().then((value) => {
-          if (value) {
-            setTimeout(() => {
-              checkAccessibilityPermission().then((value) => {
-                if (value) {
-                  notificationPermissionAndroid().then((isAccepted) => {
-                    if (isAccepted) {
-                      startSuperTracking();
-                    }
-                  });
-                }
-              });
-            }, 1000);
-          }
-        });
-      } else {
-        startSuperTracking();
-      }
-    });
-  };
-
   /**
    * Idea: send frames if we're connected to server
    * Dep: [isConnected]
@@ -355,13 +333,16 @@ export default function Damage() {
     });
     return () => listner.remove();
   }, []);
-  // End Effects
+
+  // TRACKING SERVICE EFFECTS
 
   useEffect(() => {
-    return () => {
-      stopSuperTracking();
-    };
+    checkAccessibilityPermission().then((value) => {
+      setIsdriveSuperSafeEnabled(value);
+    });
   }, []);
+
+  // End Effects
 
   return (
     <View
@@ -409,8 +390,22 @@ export default function Damage() {
               <TouchableOpacity
                 onPress={() =>
                   !isDriveSuperSafeEnabled
-                    ? startSuperSafety()
-                    : stopSuperTracking()
+                    ? (() => {
+                        notificationPermissionAndroid().then((isAccepted) => {
+                          if (isAccepted) {
+                            startBackgroundTrackingCommand(() => {
+                              setIsdriveSuperSafeEnabled(true);
+                            });
+                          } else {
+                            console.error(
+                              "Notification Permission Needed for DriveSafe App",
+                            );
+                          }
+                        });
+                      })()
+                    : stopBackgroundServiceCommand(() => {
+                        setIsdriveSuperSafeEnabled(false);
+                      })
                 }
               >
                 <AntDesign
